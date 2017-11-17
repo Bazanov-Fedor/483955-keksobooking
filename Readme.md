@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Фёдор Базанов](https://up.htmlacademy.ru/javascript/11/user/483955).
-* Наставник: `Екатерина Кащенко`(https://htmlacademy.ru/profile/id109008).
+* Наставник: [Екатерина Кащенко](https://htmlacademy.ru/profile/id109008).
 
 ---
 
