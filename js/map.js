@@ -1,11 +1,11 @@
 'use strict';
 
 (function () {
-  // количество меток других заказов на карте
-  var NUMBER_ORDERS = 8;
+  // количество других предложений на карте
+  var NUMBER_PINS = 8;
 
-  // заголовки объявлений
-  var TITLE = [
+  // Заголовки объявлений по соседству
+  var TITLES = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
     'Огромный прекрасный дворец',
@@ -13,35 +13,27 @@
     'Красивый гостевой домик',
     'Некрасивый негостеприимный домик',
     'Уютное бунгало далеко от моря',
-    'Неуютное бунгало поколено в воде'
+    'Неуютное бунгало по колено в воде'
   ];
 
-  // диапазон цен
-  var PRICE = {
-    min: 1000,
-    max: 1000000
-  };
+  // тип помещения в объявлении
+  var TYPES = [
+    'flat',
+    'house',
+    'bungalo'
+  ];
 
-  // тип жилого помещения
-  var HOUSE_TYPES = ['flat', 'house', 'bungalo'];
-
+  // соответствие типов объектов недвижимости
   var offerType = {
     flat: 'Квартира',
     house: 'Дом',
     bungalo: 'Бунгало'
   };
 
-  // количество комнат
-  var ROOMS = {
-    min: 1,
-    max: 5
-  };
+  // время регистрации и выезда в объявлении
+  var CHECKS = ['12:00', '13:00', '14:00'];
 
-  // время заезда и выезда
-  var CHECKIN = ['12:00', '13:00', '14:00'];
-  var CHECKOUT = ['12:00', '13:00', '14:00'];
-
-  // преимущества в конкретном месте
+  // преимущества определённого объявления
   var FEATURES = [
     'wifi',
     'dishwasher',
@@ -51,162 +43,171 @@
     'conditioner'
   ];
 
-  // количество гостей
-  var guests = {
+  // количество комнат
+  var ROOMS = {
     min: 1,
-    max: 8
+    max: 5
   };
 
-  // диапазон координат расположения пина заказа на карте
-  var COORDINATES = {
-    x: {
-      min: 300,
-      max: 900
-    },
-    y: {
-      min: 100,
-      max: 500
-    }
+  // количество гостей
+  var GUESTS = {
+    min: 1,
+    max: 10
   };
 
-  // создадим массив объявлений
-  var offerAds = [];
-  // создадим копию исходного массива заголовков объявлений
-  var offerTitles = TITLE.slice();
+  // диапазон цен на объекты недвижимости
+  var PRISE = {
+    min: 1000,
+    max: 1000000
+  };
 
-  // найдём элементы в DOM с которыми будем работать
-  // блок с картой, уберём у него скрывающий класс
+  // высота пина на карте
+  var PIN_Y = 64;
+
+  // диапазон размещения координат маркеров на карте
+  var coordinates = {
+    x: {min: 300, max: 900},
+    y: {min: 100, max: 500}
+  };
+
+  // Создадим массив объявлений и копию массива заголовков
+  var offer = [];
+  var offerTitles = TITLES.slice();
+
+  // Найдём в DOM-е элементы с которыми будем работать
   var map = document.querySelector('.map');
-
+  // удалим класс скрывающий объявления на карте
   map.classList.remove('map--faded');
-
-
-  // "блок" с элементами которые будем заполнять
-  var orderBlock = document.querySelector('.map__pins');
-  // карточка заказка(описание) в блоке
-  var orderDescription = document.querySelector('template').content.querySelector('.map__card');
-  // пин заказа(маркер)
-  var orderPin = document.querySelector('template').content.querySelector('.map__pin');
-  // созадние фрагмента, который будем вставлять вдокумент
+  // Оъект DOM, содержащий список маркеров
+  var pinsContainer = document.querySelector('.map__pins');
+  // Шаблон для заполнения состоящий из пина на карте и блока с информацией о объявлении
+  var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
+  var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
+  //  Фрагмент документа, который формируется для вставки в документ
   var fragment = document.createDocumentFragment();
 
-
-  //  ----------  функции-утилиты  ----------  //
-  // нахождение рандомного числа в пределах от min до max
-  var getRandomNumber = function (min, max) {
-    return Math.random() * (max - min) + min;
+  // ----------  util  ---------- //
+  // Получение случайного целого значения, включая min и исключая max
+  var getRandomValue = function (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
   };
-  //  ----------  функции-утилиты  ----------  //
 
-  // найдём смещение координта расположения пина из-за его размеров
-  var pinHeight = 62;
+  // Вычисление смещения пина из-за его размеров
   var pinOffsetX = function (x) {
     return x + 'px';
   };
   var pinOffsetY = function (y) {
-    return (y - pinHeight) + 'px';
+    return (y - PIN_Y) + 'px';
   };
 
-  // создадим массив со случайными удобствами для других объйявлений поблизости
-  var makeRandomFeatures = function () {
-    // скопируем массив удобств для заполнения
-    var featuresList = FEATURES.slice();
-    var arrFeatures = getRandomNumber(Math.round(featuresList.length / 2), featuresList.length);
-    var offerFeatures = [];
+  // Создаёт массив со случайным количеством преимуществ
+  var makeFeatures = function () {
+    var arrAdvantages = FEATURES.slice();
+    var lengthArrRandom = getRandomValue(Math.round(arrAdvantages.length / 2), arrAdvantages.length);
+    var OfferFeatures = [];
 
-    for (var i = 0; i <= arrFeatures; i++) {
-      var indexFetures = getRandomNumber(0, featuresList.length);
-
-      offerFeatures[i] = offerFeatures.slice(indexFetures, 1);
+    for (var i = 0; i <= lengthArrRandom; i++) {
+      var indexRandom = getRandomValue(0, arrAdvantages.length);
+      OfferFeatures[i] = arrAdvantages.splice(indexRandom, 1);
     }
 
-    return offerFeatures;
+    return OfferFeatures;
   };
 
-  // проработаем строку для преимущества
-  var getString = function (elem) {
+  // Создадим строку для вставки преимущества
+  var getStringFeatures = function (elem) {
     return '<li class="feature feature--' + elem + '"></li>';
   };
 
-  // создадим массив с сгенерированными характеристиками
-  var generateOffer = function () {
-    for (var i = 0; i <= NUMBER_ORDERS - 1; i++) {
-      // создаём координаты в заданных промежутках
-      var locX = getRandomNumber(COORDINATES.x.min, COORDINATES.x.max);
-      var locY = getRandomNumber(COORDINATES.y.min, COORDINATES.y.max);
+  // Создание массива объектов недвижимости
+  var generateAds = function (numberObj) {
+    for (var i = 0; i < numberObj; i++) {
+      // измение адрес изображения
+      var avatarPrefix = (i + 1);
+      // создание координат в заданных диапозонах
+      var locationX = getRandomValue(coordinates.x.min, coordinates.x.max);
+      var locationY = getRandomValue(coordinates.y.min, coordinates.y.max);
 
-      offerAds[i] = {
+      offer[i] = {
         author: {
-          avatar: 'img/avatars/user0' + +i + '.png',
+          avatar: 'img/avatars/user0' + avatarPrefix + '.png',
         },
 
         offer: {
-          title: offerTitles.splice(getRandomNumber(0, offerTitles.length), 1),
-          address: locX + ', ' + locY,
-          price: getRandomNumber(PRICE.min, PRICE.max),
-          type: HOUSE_TYPES[getRandomNumber(0, HOUSE_TYPES.length)],
-          rooms: getRandomNumber(ROOMS.min, ROOMS.max),
-          guests: getRandomNumber(guests.min, guests.max),
-          checkin: CHECKIN[getRandomNumber(0, CHECKIN.length)],
-          checkout: CHECKOUT[getRandomNumber(0, CHECKIN.length)],
-          features: makeRandomFeatures(),
-          descroptopn: '',
+          title: offerTitles.splice(getRandomValue(0, offerTitles.length), 1),
+          address: locationX + ', ' + locationY,
+          price: getRandomValue(PRISE.min, PRISE.max),
+          type: TYPES[getRandomValue(0, TYPES.length)],
+          rooms: getRandomValue(ROOMS.min, ROOMS.max),
+          guests: getRandomValue(GUESTS.min, GUESTS.max),
+          checkin: CHECKS[getRandomValue(0, CHECKS.length)],
+          checkout: CHECKS[getRandomValue(0, CHECKS.length)],
+          features: makeFeatures(),
+          description: '',
           photos: []
         },
 
         location: {
-          x: locX,
-          y: locY
+          x: locationX,
+          y: locationY
         }
       };
     }
-    return offerAds;
+
+    return offer;
   };
 
-  // создание пина с координатами
-  var renderPin = function (offerAd) {
-    var orderElement = orderPin.cloneNode(true);
+  // Формирование метки для объекта - заполнение данными из массива объектов
+  var renderPin = function (pin) {
+    var mapPinElement = mapPinTemplate.cloneNode(true);
 
-    orderElement.querySelector('img').scr = offerAd.author.avatar;
-    orderElement.style.left = pinOffsetX(offerAd.location.x);
-    orderElement.style.top = pinOffsetY(offerAd.location.y);
+    mapPinElement.querySelector('img').src = pin.author.avatar;
+    mapPinElement.style.left = pinOffsetX(pin.location.x);
+    mapPinElement.style.top = pinOffsetY(pin.location.y);
 
-    return orderElement;
+    return mapPinElement;
   };
 
-  var renderCard = function (offerAd) {
-    var cardElement = orderDescription.cloneNode(true);
-    var cardP = cardElement.querySelector('p');
-    var cardList = cardElement.querySelector('.popup__features');
+  // Формирование карточки объекта - заполнение данными из массива объектов
+  var renderCard = function (offerObject) {
+    var mapElement = mapCardTemplate.cloneNode(true);
+    var mapCardP = mapElement.querySelectorAll('p');
+    var mapCardList = mapElement.querySelector('.popup__features');
 
-    cardElement.querySelector('h3').textContent = offerAd.offer.title;
-    cardElement.querySelector('.popup__price').innerHTML = offerAd.offer.price + '&#x20bd;/ночь';
-    cardElement.querySelector('small').textContent = offerAd.offer.address;
-    cardElement.querySelector('h4').textContent = offerType[offerAd.offer.type];
+    // заголовок объявления
+    mapElement.querySelector('h3').textContent = offerObject.offer.title;
+    // цена
+    mapElement.querySelector('.popup__price').innerHTML = offerObject.offer.price + '&#x20bd;/ночь';
+    // адрес
+    mapElement.querySelector('small').textContent = offerObject.offer.address;
+    // тип
+    mapElement.querySelector('h4').textContent = offerType[offerObject.offer.type];
+    // количество гостей
+    mapCardP[2].textContent = offerObject.offer.rooms + ' комнаты для ' + offerObject.offer.guests + ' гостей';
+    // время заезда и выезда
+    mapCardP[3].textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
+    // описание
+    mapCardP[4].textContent = offerObject.offer.description;
+    mapCardList.innerHTML = '';
+    mapCardList.insertAdjacentHTML('afterBegin', offerObject.offer.features.map(getStringFeatures).join(' '));
+    mapElement.appendChild(mapCardList);
 
-    cardP[2].textContent = offerAd.offer.rooms + ' комнат для ' + offerAd.offer.guests + ' гостей';
-    cardP[3].textContent = 'Заезд после ' + offerAd.offer.checkin + ', выезд до ' + offerAd.offer.checkout;
-    cardP[4].textContent = offerAd.offer.descroptopn;
-
-    cardList.innerHTML = '';
-    cardList.insertAdjacentHTML('afterBegin', offerAd.offer.features.map(getString).join(' '));
-
-    cardElement.appendChild(cardList);
-
-    return cardElement;
+    return mapElement;
   };
 
-  offerAds = generateOffer(NUMBER_ORDERS);
-
-  offerAds.forEach(function (elem) {
+  // Создаем и заполняем данными массив объектов недвижимости
+  offer = generateAds(NUMBER_PINS);
+  // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
+  offer.forEach(function (elem) {
     fragment.appendChild(renderPin(elem));
   });
 
-  orderBlock.appendChild(fragment);
-
+  // Добавляем маркеры на страницу
+  pinsContainer.appendChild(fragment);
+  // Создаем новый пустой фрагмент
   fragment = document.createDocumentFragment();
-
-  fragment.appendChild(renderCard(offerAds[0]));
-  debugger
+  // Заполняем фрагмент данными из массива объектов для отрисовки первой карточки недвижимости
+  fragment.appendChild(renderCard(offer[0]));
+  // Добавляем карточку недвижимости на страницу
   map.appendChild(fragment);
 })();
