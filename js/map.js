@@ -76,8 +76,7 @@
 
   // Найдём в DOM-е элементы с которыми будем работать
   var map = document.querySelector('.map');
-  // удалим класс скрывающий объявления на карте
-  map.classList.remove('map--faded');
+
   // Оъект DOM, содержащий список маркеров
   var pinsContainer = document.querySelector('.map__pins');
   // Шаблон для заполнения состоящий из пина на карте и блока с информацией о объявлении
@@ -202,12 +201,64 @@
     fragment.appendChild(renderPin(elem));
   });
 
-  // Добавляем маркеры на страницу
-  pinsContainer.appendChild(fragment);
   // Создаем новый пустой фрагмент
   fragment = document.createDocumentFragment();
   // Заполняем фрагмент данными из массива объектов для отрисовки первой карточки недвижимости
   fragment.appendChild(renderCard(offer[0]));
   // Добавляем карточку недвижимости на страницу
   map.appendChild(fragment);
+
+  // --------- module4-task1  --------  //
+  // код клавиш для обработчиков
+  var keyCode = {
+    ESC: 27,
+    ENTER: 13
+  };
+
+  // найдём элементы с которыми будем работать
+
+  // форма подачи объявления
+  var form = document.querySelector('.notice__form');
+  // главный пин в центре / пользовательский пин
+  var pinUser = map.querySelector('.map__pin--main');
+  // состояние пина
+  var activPin = false;
+  // кнопка закрытия попапа объявления
+  var buttonClose = document.querySelector('.popup__close');
+
+  // функция активации работы сайта - удаление скрывающих слассов и добавление маркеров объявлений
+  var startJob = function () {
+    // удалим класс скрывающий объявления на карте
+    map.classList.remove('map--faded');
+    // удалим класс скрывающий форму
+    form.classList.remove('.notice__form--disabled');
+    // Добавляем маркеры на страницу
+    pinsContainer.appendChild(fragment);
+  };
+
+  pinUser.addEventListener('mouseup', function () {
+    startJob();
+  });
+
+  // Закрытие попапа
+  var closePopup = function () {
+    mapCard.classList.add('hidden');
+    if (activPin !== false) {
+      activPin.classList.remove('map__pin--active');
+      activPin = false;
+    }
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
+
+  // Реализуем закрытие описания объявления с помощью мыши и клавиатуры
+  // закрытие карточки описания по клику
+  buttonClose.addEventListener('click', function () {
+    closePopup();
+  });
+  // закрытие карточки описания с клавиатуры
+  buttonClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === keyCode.ENTER) {
+      closePopup();
+    }
+  });
 })();
