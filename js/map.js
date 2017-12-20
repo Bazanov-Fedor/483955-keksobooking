@@ -356,12 +356,11 @@
   // заголовок объявления пользователя
   var onValiditiTitle = function () {
     denoteInvalidField(userTitle);
-
-    if (userTitle.validiti.tooSoort) {
+    if (userTitle.validiti.tooShort) {
       userTitle.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
     } else if (userTitle.validiti.tooLong) {
       userTitle.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
-    } else if (userTitle.validiti.activPin.valueMassage) {
+    } else if (userTitle.validiti.valueMassage) {
       userTitle.setCustomValidity('Обязательное поле для заполнения');
     } else {
       userTitle.setCustomValidity('');
@@ -371,14 +370,13 @@
 
   var onBlurInput = function (evt) {
     evt.target.checkValidity();
-    evt.addEventListener('form');
   };
 
   var onFocusInput = function (evt) {
     returnConditionField(evt.target);
   };
 
-  // синхронизируем время заселения и выселения при изменении поля!!!!
+  // синхронизируем время заселения и выселения при изменении поля
   // Автоввод времени выезда при изменении времени въезда
   var onChangeTimeIn = function () {
     userCheckoutHous.selectedIndex = userCheckinHous.selectedIndex;
@@ -422,18 +420,18 @@
     elem.classList.add('hidden');
   };
 
-  // настроим изменение количества гостей от количества комнат
+  // зависимость количества гостей от количества комнат
   var onCangeRomsGuest = function () {
-    var oneI = capacityHous.options.length;
-    var oneII = guestRooms[roomHous.value];
-    var oneIII = oneII.length;
+    var capacitySelectHous = capacityHous.options.length;
+    var capacitySelectRooms = guestRooms[roomHous.value];
+    var capacitySelecting = capacitySelectRooms.length;
     [].forEach.call(capacityHous.options, activateFormSelect);
 
-    for (var i = 0; i < oneI; i++) {
+    for (var i = 0; i < capacitySelectHous; i++) {
       var search = false;
 
-      for (var k = 0; k < oneIII; k++) {
-        if (oneII[k] === parseInt(capacityHous.options[i].value, 10)) {
+      for (var k = 0; k < capacitySelecting; k++) {
+        if (capacitySelectRooms[k] === parseInt(capacityHous.options[i].value, 10)) {
           search = true;
           break;
         }
@@ -443,7 +441,7 @@
       }
     }
 
-    capacityHous.value = oneII[0];
+    capacityHous.value = capacitySelectRooms[0];
   };
 
   // обработчики событий
@@ -462,7 +460,6 @@
   userOfferPrice.addEventListener('change', changePrice);
   // проверка комнат
   roomHous.addEventListener('change', onCangeRomsGuest);
-
   // временный адрес в форме
   userAddress.value = 'Временный адрес для проверки';
 })();
