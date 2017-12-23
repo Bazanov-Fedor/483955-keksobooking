@@ -314,8 +314,8 @@
   // объект соответствия количества гостевых комант и возможных гостей
   var guestRooms = {
     1: [1],
-    2: [1, 2],
-    3: [1, 2, 3],
+    2: [2, 1],
+    3: [3, 2, 1],
     100: [0]
   };
 
@@ -328,7 +328,7 @@
   };
 
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
-  var userAddress = form.querySelector('#address');
+  var userAdres = form.querySelector('#address');
   var userTitle = form.querySelector('#title');
   var userTypeOffer = form.querySelector('#type');
   var userOfferPrice = form.querySelector('#price');
@@ -336,44 +336,49 @@
   var userCheckoutHous = form.querySelector('#timeout');
   var roomHous = form.querySelector('#room_number');
   var capacityHous = form.querySelector('#capacity');
+  var buttonSubmit = form.querySelector('.form__submit');
+  // временный адрес в форме
+  userAdres.value = 'Временный адрес для проверки';
 
-  // Создадим две функции для обозначения не правильно введённых данных и возвращения исходного состояния поля
-  // Появление красной рамки при неправильном заполнении
-  var denoteInvalidField = function (elem) {
-    elem.style.borderColor = 'red';
-    elem.style.borderWidth = '2px';
-  };
-
-  // возвращение исходного состояния поля
-  var returnConditionField = function (elem) {
-    elem.style.borderColor = '';
-    elem.style.borderWidth = '';
-  };
-
-  // Используем созданные функции при проверке полей формы на валидность
-  // и добавим текст сообщения, при ошибке
-
+  // валидация заголовка объявления пользователя
+  // минимальное и максимальное количество знаков в заголовке
+  var minLengthTitle = 30;
+  var maxLengthTitle = 100;
   // заголовок объявления пользователя
-  var onValiditiTitle = function () {
-    denoteInvalidField(userTitle);
-    if (userTitle.validiti.tooShort) {
-      userTitle.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
-    } else if (userTitle.validiti.tooLong) {
-      userTitle.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
-    } else if (userTitle.validiti.valueMassage) {
-      userTitle.setCustomValidity('Обязательное поле для заполнения');
+  userTitle.addEventListener('change', function (evt) {
+    var target = evt.target;
+    if (target.value.length < minLengthTitle) {
+      target.setAttribute('style', 'border: 2px solid red;');
+      target.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
+    } else if (target.value.length > maxLengthTitle) {
+      target.setAttribute('style', 'border: 2px solid red;');
+      target.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
     } else {
-      userTitle.setCustomValidity('');
-      returnConditionField(userTitle);
+      target.setCustomValidity('');
     }
-  };
+  });
 
-  var onBlurInput = function (evt) {
-    evt.target.checkValidity();
-  };
+  // валидация цены на определённый тип жилья
+  // минимальная и максимальная цена
+  var minPrice = 0;
+  var maxPrice = 1000000;
+  // проверка цены
+  userOfferPrice.addEventListener('change', function (evt) {
+    var target = evt.target;
+    if (target.value < minPrice) {
+      target.setAttribute('style', 'border: 2px solid red;');
+      target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + minPrice);
+    } else if (target.value > maxPrice) {
+      target.setAttribute('style', 'border: 2px solid red;');
+      target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + maxPrice);
+    } else {
+      target.setCustomValidity('');
+    }
+  });
 
-  var onFocusInput = function (evt) {
-    returnConditionField(evt.target);
+  // изменение минимальной стоимости жилья
+  var izmenenizMinPrice = function () {
+    userOfferPrice.min = offerTypePrice[userTypeOffer.value];
   };
 
   // синхронизируем время заселения и выселения при изменении поля
@@ -386,36 +391,10 @@
     userCheckinHous.value = userCheckoutHous.value;
   };
 
-  // изменение минимальной стоимости жилья
-  var izmenenizMinPrice = function () {
-    userOfferPrice.min = offerTypePrice[userTypeOffer.value];
-  };
-
-  // Создадим функцию для проверки соответствия стоимости объектов недвижимости и цены на них
-  var onValiditiPrice = function () {
-    denoteInvalidField(userOfferPrice);
-
-    if (userOfferPrice.validiti.rangeUnderflow) {
-      userOfferPrice.setCustomValidity('Стоимость жилья ниже рекомендованной');
-    } else if (userOfferPrice.validiti.rangeOverflow) {
-      userOfferPrice.setCustomValidity('Стоимость жилья выше рекомендованной');
-    } else {
-      userOfferPrice.setCustomValidity('');
-      returnConditionField(userOfferPrice);
-    }
-  };
-
-  // если изменение цены удолетворяет условиям
-  var changePrice = function () {
-    returnConditionField(userOfferPrice);
-    userOfferPrice.setCustomValidity('');
-  };
-
   // ативация и отключение опции (добавляем/удаляем класс hidden)
   var activateFormSelect = function (elem) {
     elem.classList.remove('hidden');
   };
-
   var disabledFormSelect = function (elem) {
     elem.classList.add('hidden');
   };
@@ -443,23 +422,28 @@
 
     capacityHous.value = capacitySelectRooms[0];
   };
+  // вызываем функицю, чтоб она отработала сразу при открытии окна
+  onCangeRomsGuest();
 
-  // обработчики событий
-  // заголовок объявления пользователя
-  userTitle.addEventListener('invalid', onValiditiTitle);
-  userTitle.addEventListener('blur', onBlurInput);
-  userTitle.addEventListener('focus', onFocusInput);
   // синхронизация времени вьезда
   userCheckinHous.addEventListener('change', onChangeTimeIn);
   // синхронизация времени выезда
   userCheckoutHous.addEventListener('change', onChangeTimeOut);
   // изменение типа жилого помещения
   userTypeOffer.addEventListener('change', izmenenizMinPrice);
-  // проверка цены
-  userOfferPrice.addEventListener('invalid', onValiditiPrice);
-  userOfferPrice.addEventListener('change', changePrice);
   // проверка комнат
   roomHous.addEventListener('change', onCangeRomsGuest);
-  // временный адрес в форме
-  userAddress.value = 'Временный адрес для проверки';
+
+  // Обработчик для проверки всей формы перед отправкой
+  buttonSubmit.addEventListener('click', function () {
+    var fieldsForm = form.querySelectorAll('input');
+
+    for (var i = 0; i < fieldsForm.length; i++) {
+      if (!fieldsForm[i].validity.valid) {
+        fieldsForm[i].setAttribute('style', 'border: 2px solid red;');
+      } else {
+        fieldsForm[i].removeAttribute('style');
+      }
+    }
+  });
 })();
