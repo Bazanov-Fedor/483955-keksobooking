@@ -3,8 +3,7 @@
 window.pin = (function () {
   // высота пина на карте
   var PIN_Y = 64;
-
-  // Шаблон, пин на карте объявлений
+  // часть шаблона - пин
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 
   // Вычисление смещения пина из-за его размеров
@@ -16,7 +15,7 @@ window.pin = (function () {
   };
 
   // Формирование метки для объекта - заполнение данными из массива объектов
-  window.pin = {
+  return {
     renderPin: function (pin, i) {
       var mapPinElement = mapPinTemplate.cloneNode(true);
 

@@ -7,34 +7,31 @@
     ENTER: 13
   };
 
+  // массив объектов недвижимости
+  var offer = [];
+  // состояние маркера
+  var activPin = false;
   // Найдём нужные элементы на странице для работы
   var map = document.querySelector('.map');
   // маркер пользователя / пин (в центре карты)
   var pinUser = map.querySelector('.map__pin--main');
-  //
-  var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
-  //
-  var mapCard = mapCardTemplate.cloneNode(true);
-  //
-  var buttonClose = mapCard.querySelector('.popup__close');
   // контейнер со списком марекров
   var pinsContainer = document.querySelector('.map__pins');
+  var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
+  var mapCard = mapCardTemplate.cloneNode(true);
+
+  var buttonClose = mapCard.querySelector('.popup__close');
   // Фрагмент документа, который формируется для вставки в документ
-  var fragment = document.createDocumentFragment();
-  // состояние маркера
-  var activPin = false;
-  // Создадим массив объявлений и копию массива заголовков
-  var offer = [];
+  var fragmentPins = document.createDocumentFragment();
 
   //  ----------- Обработчики событий на сайте  -----------  //
   // начало работы страницы(отрисовка объявлений и ативация формы) по клику на центральный пин
-
   var onPinMouseUp = function () {
     // удалим класс скрывающий объявления на карте
     map.classList.remove('map--faded');
     // Добавляем маркеры на страницу
-    pinsContainer.appendChild(fragment);
-    // удалим класс скрывающий форму
+    pinsContainer.appendChild(fragmentPins);
+    // Активируем форму
     window.form.activate();
   };
 
@@ -89,7 +86,7 @@
         if (!clickedElement.classList.contains('map__pin--main')) {
 
           // заполняем DOM-ноду
-          window.card.render.renderCard(offer[clickedElement.dataset.numPin]);
+          window.card.renderCard(mapCard, offer[clickedElement.dataset.numPin]);
           openPopup();
         }
         return;
@@ -98,7 +95,7 @@
     }
   };
 
-  // Обработчики на элементах
+  //  ==========  Обработчики событий  ==========  //
   // Делаем страницу доступной для работы пользователя
   pinUser.addEventListener('mouseup', onPinMouseUp);
   // Клик на маркер ловим на контейнере
@@ -108,27 +105,11 @@
   // Закрытие карточки с клавиатуры
   buttonClose.addEventListener('keydown', onCardCloseEnterPress);
 
-  /* // соответствие типов объектов недвижимости
-  var offerType = {
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало',
-    palace: 'Дворец'
-  };
-
-   */
-
-
-  // Фрагмент для карточки
-  var fragmentCard = document.createDocumentFragment();
-
   // Создаем и заполняем данными массив объектов недвижимости
   offer = window.data.generateAds();
   // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
-  offer.forEach(window.render.pin, fragment);
-  // Заполняем фрагмент данными из массива объектов для отрисовки карточки
-  // fragmentCard.appendChild(renderCard(offer[0]));
+  offer.forEach(window.pin.renderPin, fragmentPins);
   // Добавляем карточку недвижимости на страницу и скрываем ее
-  map.appendChild(fragmentCard);
+  map.appendChild(mapCard);
   mapCard.classList.add('hidden');
 })();

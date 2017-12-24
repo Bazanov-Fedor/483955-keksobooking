@@ -1,21 +1,7 @@
 'use strict';
 
-(function () {
-  // Найдём необходимые элементы формы с которыми взаимодействует пользователь
-  var form = document.querySelector('.notice__form');
-  var userAdres = form.querySelector('#address');
-  var userTitle = form.querySelector('#title');
-  var userTypeOffer = form.querySelector('#type');
-  var userOfferPrice = form.querySelector('#price');
-  var userCheckinHous = form.querySelector('#timein');
-  var userCheckoutHous = form.querySelector('#timeout');
-  var roomHous = form.querySelector('#room_number');
-  var capacityHous = form.querySelector('#capacity');
-  var buttonSubmit = form.querySelector('.form__submit');
-  // временный адрес в форме
-  userAdres.value = 'Временный адрес для проверки';
-
-  // объект соответствия количества гостевых комант и возможных гостей
+window.form = (function () {
+// объект соответствия количества гостевых комант и возможных гостей
   var guestRooms = {
     1: [1],
     2: [2, 1],
@@ -30,6 +16,21 @@
     house: 5000,
     palace: 10000
   };
+
+  // форма подачи объявления
+  var form = document.querySelector('.notice__form');
+  // Найдём необходимые элементы формы с которыми взаимодействует пользователь
+  var userAdres = form.querySelector('#address');
+  var userTitle = form.querySelector('#title');
+  var userTypeOffer = form.querySelector('#type');
+  var userOfferPrice = form.querySelector('#price');
+  var userCheckinHous = form.querySelector('#timein');
+  var userCheckoutHous = form.querySelector('#timeout');
+  var roomHous = form.querySelector('#room_number');
+  var capacityHous = form.querySelector('#capacity');
+  var buttonSubmit = form.querySelector('.form__submit');
+  // временный адрес в форме
+  userAdres.value = 'Временный адрес для проверки';
 
   // валидация заголовка объявления пользователя
   // минимальное и максимальное количество знаков в заголовке
@@ -140,6 +141,7 @@
 
   return {
     activate: function () {
+      // удалим класс скрывающий форму
       form.classList.remove('notice__form--disabled');
     }
   };

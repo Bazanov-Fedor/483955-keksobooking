@@ -1,12 +1,11 @@
 'use strict';
 
-(function () {
+window.card = (function () {
   // Создадим строку для вставки преимущества
   var getStringFeatures = function (elem) {
     return '<li class="feature feature--' + elem + '"></li>';
   };
 
-  // Формирование карточки объявления - заполнение данными из массива объектов
   return {
     renderCard: function (mapCard, offerObject) {
       var mapCardP = mapCard.querySelectorAll('p');
@@ -34,5 +33,4 @@
       return mapCard;
     }
   };
-
 }());
