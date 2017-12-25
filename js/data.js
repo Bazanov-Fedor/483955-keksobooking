@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-// количество других предложений на карте
+  // количество других предложений на карте
   var NUMBER_PINS = 8;
 
   // Заголовки объявлений по соседству
@@ -23,6 +23,14 @@
     'bungalo',
     'palace'
   ];
+
+  // соответствие типов объектов недвижимости
+  var offerType = {
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало',
+    palace: 'Дворец'
+  };
 
   // время регистрации и выезда в объявлении
   var CHECKS = ['12:00', '13:00', '14:00'];
@@ -65,65 +73,66 @@
   var offer = [];
   var offerTitles = TITLES.slice();
 
+  // Получение случайного целого значения, включая min и исключая max
+  var getRandomValue = function (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+
   // Создаёт массив со случайным количеством преимуществ
   var getRandomFeatures = function () {
     var arrAdvantages = FEATURES.slice();
-    var lengthArrRandom = window.util.getRandomValue(Math.round(arrAdvantages.length / 2), arrAdvantages.length);
+    var lengthArrRandom = getRandomValue(Math.round(arrAdvantages.length / 2), arrAdvantages.length);
     var OfferFeatures = [];
 
     for (var i = 0; i <= lengthArrRandom; i++) {
-      var indexRandom = window.util.getRandomValue(0, arrAdvantages.length);
+      var indexRandom = getRandomValue(0, arrAdvantages.length);
       OfferFeatures[i] = arrAdvantages.splice(indexRandom, 1);
     }
 
     return OfferFeatures;
   };
 
-  return {
-    // соответствие типов объектов недвижимости
-    offerType: {
-      flat: 'Квартира',
-      house: 'Дом',
-      bungalo: 'Бунгало',
-      palace: 'Дворец'
-    },
 
-    // Создание массива объектов недвижимости
-    generateAds: function () {
-      for (var i = 0; i < NUMBER_PINS; i++) {
-        // измение адрес изображения
-        var avatarPrefix = (i + 1);
-        // создание координат в заданных диапозонах
-        var locationX = window.util.getRandomValue(coordinates.x.min, coordinates.x.max);
-        var locationY = window.util.getRandomValue(coordinates.y.min, coordinates.y.max);
+  // Создание массива объектов недвижимости
+  var generateAds = function () {
+    for (var i = 0; i < NUMBER_PINS; i++) {
+      // измение адрес изображения
+      var avatarPrefix = (i + 1);
+      // создание координат в заданных диапозонах
+      var locationX = getRandomValue(coordinates.x.min, coordinates.x.max);
+      var locationY = getRandomValue(coordinates.y.min, coordinates.y.max);
 
-        offer[i] = {
-          author: {
-            avatar: 'img/avatars/user0' + avatarPrefix + '.png',
-          },
+      offer[i] = {
+        author: {
+          avatar: 'img/avatars/user0' + avatarPrefix + '.png',
+        },
 
-          offer: {
-            title: offerTitles.splice(window.util.getRandomValue(0, offerTitles.length), 1),
-            address: locationX + ', ' + locationY,
-            price: window.util.getRandomValue(PRISE.min, PRISE.max),
-            type: TYPES[window.util.getRandomValue(0, TYPES.length)],
-            rooms: window.util.getRandomValue(ROOMS.min, ROOMS.max),
-            guests: window.util.getRandomValue(GUESTS.min, GUESTS.max),
-            checkin: CHECKS[window.util.getRandomValue(0, CHECKS.length)],
-            checkout: CHECKS[window.util.getRandomValue(0, CHECKS.length)],
-            features: getRandomFeatures(),
-            description: '',
-            photos: []
-          },
+        offer: {
+          title: offerTitles.splice(getRandomValue(0, offerTitles.length), 1),
+          address: locationX + ', ' + locationY,
+          price: getRandomValue(PRISE.min, PRISE.max),
+          type: TYPES[getRandomValue(0, TYPES.length)],
+          rooms: getRandomValue(ROOMS.min, ROOMS.max),
+          guests: getRandomValue(GUESTS.min, GUESTS.max),
+          checkin: CHECKS[getRandomValue(0, CHECKS.length)],
+          checkout: CHECKS[getRandomValue(0, CHECKS.length)],
+          features: getRandomFeatures(),
+          description: '',
+          photos: []
+        },
 
-          location: {
-            x: locationX,
-            y: locationY
-          }
-        };
-      }
-
-      return offer;
+        location: {
+          x: locationX,
+          y: locationY
+        }
+      };
     }
+
+    return offer;
+  };
+
+  window.data = {
+    generateAds: generateAds,
+    offerType: offerType
   };
 }());

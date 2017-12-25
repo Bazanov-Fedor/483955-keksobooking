@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+(function () {
 // объект соответствия количества гостевых комант и возможных гостей
   var guestRooms = {
     1: [1],
@@ -17,27 +17,25 @@ window.form = (function () {
     palace: 10000
   };
 
-  // форма подачи объявления
-  var form = document.querySelector('.notice__form');
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
-  var userAdres = form.querySelector('#address');
-  var userTitle = form.querySelector('#title');
-  var userTypeOffer = form.querySelector('#type');
-  var userOfferPrice = form.querySelector('#price');
-  var userCheckinHous = form.querySelector('#timein');
-  var userCheckoutHous = form.querySelector('#timeout');
-  var roomHous = form.querySelector('#room_number');
-  var capacityHous = form.querySelector('#capacity');
-  var buttonSubmit = form.querySelector('.form__submit');
+  // форма подачи объявления
+  var userAdres = window.form.querySelector('#address');
+  var userTitle = window.form.querySelector('#title');
+  var userTypeOffer = window.form.querySelector('#type');
+  var userOfferPrice = window.form.querySelector('#price');
+  var userCheckinHous = window.form.querySelector('#timein');
+  var userCheckoutHous = window.form.querySelector('#timeout');
+  var roomHous = window.form.querySelector('#room_number');
+  var capacityHous = window.form.querySelector('#capacity');
+  var buttonSubmit = window.form.querySelector('.form__submit');
   // временный адрес в форме
   userAdres.value = 'Временный адрес для проверки';
 
-  // валидация заголовка объявления пользователя
-  // минимальное и максимальное количество знаков в заголовке
-  var minLengthTitle = 30;
-  var maxLengthTitle = 100;
-  // заголовок объявления пользователя
+  //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
+    // минимальное и максимальное количество знаков в заголовке
+    var minLengthTitle = 30;
+    var maxLengthTitle = 100;
     var target = evt.target;
     if (target.value.length < minLengthTitle) {
       target.setAttribute('style', 'border: 2px solid red;');
@@ -50,12 +48,11 @@ window.form = (function () {
     }
   });
 
-  // валидация цены на определённый тип жилья
-  // минимальная и максимальная цена
-  var minPrice = 0;
-  var maxPrice = 1000000;
-  // проверка цены
+  //  -----------  валидация цены на определённый тип жилья  -----------  //
   userOfferPrice.addEventListener('change', function (evt) {
+    // минимальная и максимальная цена
+    var minPrice = 0;
+    var maxPrice = 1000000;
     var target = evt.target;
     if (target.value < minPrice) {
       target.setAttribute('style', 'border: 2px solid red;');
@@ -114,7 +111,7 @@ window.form = (function () {
 
     capacityHous.value = capacitySelectRooms[0];
   };
-  // вызываем функицю, чтоб она отработала сразу при открытии окна
+  // вызываем функицию, чтоб она отработала сразу при открытии окна
   onCangeRomsGuest();
 
   // синхронизация времени вьезда
@@ -126,9 +123,9 @@ window.form = (function () {
   // проверка комнат
   roomHous.addEventListener('change', onCangeRomsGuest);
 
-  // Обработчик для проверки всей формы перед отправкой
+  // Обработчик для проверки всей полей формы перед отправкой по клику на submit
   buttonSubmit.addEventListener('click', function () {
-    var fieldsForm = form.querySelectorAll('input');
+    var fieldsForm = window.form.querySelectorAll('input');
 
     for (var i = 0; i < fieldsForm.length; i++) {
       if (!fieldsForm[i].validity.valid) {
@@ -138,11 +135,4 @@ window.form = (function () {
       }
     }
   });
-
-  return {
-    activate: function () {
-      // удалим класс скрывающий форму
-      form.classList.remove('notice__form--disabled');
-    }
-  };
 }());
