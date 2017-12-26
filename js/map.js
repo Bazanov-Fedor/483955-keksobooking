@@ -8,8 +8,6 @@
   };
 
   var offer = [];
-  // маркер пользователя / пин (в центре карты)
-  var pinUser = window.map.querySelector('.map__pin--main');
   // контейнер со списком марекров
   var pinsContainer = document.querySelector('.map__pins');
   // шаблон
@@ -84,7 +82,7 @@
         if (!clickedElement.classList.contains('map__pin--main')) {
 
           // заполняем DOM-ноду
-          window.renderCard(mapCard, offer[clickedElement.dataset.numPin]);
+          window.card.renderCard(mapCard, offer[clickedElement.dataset.numPin]);
           openPopup();
         }
         return;
@@ -95,7 +93,7 @@
 
   // Обработчики на элементах
   // Делаем страницу доступной для работы пользователя
-  pinUser.addEventListener('mouseup', onPinMouseUp);
+  window.pinUser.addEventListener('mouseup', onPinMouseUp);
   // Клик на маркер ловим на контейнере
   pinsContainer.addEventListener('click', onPinClick);
   // Закрытие карточки по нажатию мышки
@@ -104,9 +102,9 @@
   buttonClose.addEventListener('keydown', onCardCloseEnterPress);
 
   // Создаем и заполняем данными массив объектов недвижимости
-  offer = window.data.generateAds();
+  offer = window.data.generateAds(8);
   // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
-  offer.forEach(window.renderPin, fragmentPin);
+  offer.forEach(window.pin.renderPin);
   // Добавляем карточку недвижимости на страницу и скрываем ее
   window.map.appendChild(mapCard);
   mapCard.classList.add('hidden');

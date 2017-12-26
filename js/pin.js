@@ -16,17 +16,17 @@
     return (y - PIN_Y) + 'px';
   };
 
-  window.pin = {
-    renderPin: function (pin, i) {
-      var mapPinElement = mapPinTemplate.cloneNode(true);
+  var renderPin = function (pin, i) {
+    var mapPinElement = mapPinTemplate.cloneNode(true);
 
-      mapPinElement.querySelector('img').src = pin.author.avatar;
-      mapPinElement.style.left = pinOffsetX(pin.location.x);
-      mapPinElement.style.top = pinOffsetY(pin.location.y);
-      mapPinElement.dataset.numPin = i;
-      fragment.appendChild(mapPinElement);
+    mapPinElement.querySelector('img').src = pin.author.avatar;
+    mapPinElement.style.left = pinOffsetX(pin.location.x);
+    mapPinElement.style.top = pinOffsetY(pin.location.y);
+    mapPinElement.dataset.numPin = i;
+    fragment.appendChild(mapPinElement);
 
-      return mapPinElement;
-    }
+    return mapPinElement;
   };
+
+  window.pin = renderPin;
 }());
