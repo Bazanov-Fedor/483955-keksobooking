@@ -102,9 +102,9 @@
   buttonClose.addEventListener('keydown', onCardCloseEnterPress);
 
   // Создаем и заполняем данными массив объектов недвижимости
-  offer = window.data.generateAds(8);
+  offer = window.data.generateAds();
   // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
-  offer.forEach(window.pin.renderPin);
+  offer.forEach(window.pin.renderPin, fragmentPin);
   // Добавляем карточку недвижимости на страницу и скрываем ее
   window.map.appendChild(mapCard);
   mapCard.classList.add('hidden');
