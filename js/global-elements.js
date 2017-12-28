@@ -7,4 +7,5 @@
   window.pinUser = document.querySelector('.map__pin--main');
   // Форма подачи объявления на сайте
   window.form = document.querySelector('.notice__form');
+  window.userAdres = document.querySelector('#address');
 }());

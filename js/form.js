@@ -19,7 +19,6 @@
 
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
   // форма подачи объявления
-  var userAdres = window.form.querySelector('#address');
   var userTitle = window.form.querySelector('#title');
   var userTypeOffer = window.form.querySelector('#type');
   var userOfferPrice = window.form.querySelector('#price');
@@ -28,8 +27,6 @@
   var roomHous = window.form.querySelector('#room_number');
   var capacityHous = window.form.querySelector('#capacity');
   var buttonSubmit = window.form.querySelector('.form__submit');
-  // временный адрес в форме
-  userAdres.value = 'Временный адрес для проверки';
 
   //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
