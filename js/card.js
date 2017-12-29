@@ -35,7 +35,7 @@
       mapCard.querySelector('h3').textContent = offerObject.offer.title;
       mapCard.querySelector('.popup__price').innerHTML = offerObject.offer.price + ' &#x20bd;/ночь';
       mapCard.querySelector('small').textContent = offerObject.offer.address;
-      mapCard.querySelector('h4').textContent = window.data.offerType[offerObject.offer.type];
+      mapCard.querySelector('h4').textContent = window.data.arrTypes[offerObject.offer.type];
       mapCardP[2].textContent = offerObject.offer.rooms + makeCorrectTextRooms(offerObject) + offerObject.offer.guests + makeCorrectTextGuests(offerObject);
       mapCardP[3].textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
       mapCardP[4].textContent = offerObject.offer.description;

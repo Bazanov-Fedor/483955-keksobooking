@@ -9,14 +9,6 @@
     100: [0]
   };
 
-  // соответствие типа жилого объекта с его минимальной ценой
-  var offerTypePrice = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
-
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
   // форма подачи объявления
   var userTitle = window.form.querySelector('#title');
@@ -27,6 +19,14 @@
   var roomHous = window.form.querySelector('#room_number');
   var capacityHous = window.form.querySelector('#capacity');
   var buttonSubmit = window.form.querySelector('.form__submit');
+
+  // Функции обратного вызова для синхронизации значений полей формы
+  var syncValues = function (element, value) {
+    element.value = value;
+  };
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
+  };
 
   //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
@@ -62,19 +62,19 @@
     }
   });
 
-  // изменение минимальной стоимости жилья
-  var izmenenizMinPrice = function () {
-    userOfferPrice.min = offerTypePrice[userTypeOffer.value];
-  };
-
-  // синхронизируем время заселения и выселения при изменении поля
   // Автоввод времени выезда при изменении времени въезда
   var onChangeTimeIn = function () {
-    userCheckoutHous.selectedIndex = userCheckinHous.selectedIndex;
+    window.synchronizeFields(userCheckinHous, userCheckoutHous, window.data.arrOfferChecks, window.data.arrOfferChecks, syncValues);
   };
+
   // Автоввод времени въезда при изменении времени выезда
   var onChangeTimeOut = function () {
-    userCheckinHous.value = userCheckoutHous.value;
+    window.synchronizeFields(userCheckoutHous, userCheckinHous, window.data.arrOfferChecks, window.data.arrOfferChecks, syncValues);
+  };
+
+  // Изменение минимальной стоимости жилья
+  var onChangeType = function () {
+    window.synchronizeFields(userTypeOffer, userOfferPrice, window.data.arrOfferTypes, window.data.arrPrices, syncValueWithMin);
   };
 
   // ативация и отключение опции (добавляем/удаляем класс hidden)
@@ -116,7 +116,7 @@
   // синхронизация времени выезда
   userCheckoutHous.addEventListener('change', onChangeTimeOut);
   // изменение типа жилого помещения
-  userTypeOffer.addEventListener('change', izmenenizMinPrice);
+  userTypeOffer.addEventListener('change', onChangeType);
   // проверка комнат
   roomHous.addEventListener('change', onCangeRomsGuest);
 
