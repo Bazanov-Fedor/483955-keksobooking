@@ -31,7 +31,10 @@
 
 
   // Создаем и заполняем данными массив объектов недвижимости
-  offer = window.data.generateAds();
+  // offer = window.data.generateAds();
+  // Загружаем данные с сервера
+  window.backend.load(successHandler, errorHandler);
+
   // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
   offer.forEach(window.pin.renderPin, fragmentPin);
   // Добавляем карточку недвижимости на страницу и скрываем ее
