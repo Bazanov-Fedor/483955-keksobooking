@@ -24,6 +24,13 @@
     'palace'
   ];
 
+  var offerType = {
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало',
+    palace: 'Дворец'
+  };
+
   // время регистрации и выезда в объявлении
   var CHECKS = ['12:00', '13:00', '14:00'];
 
@@ -61,6 +68,14 @@
     y: {min: 100, max: 500}
   };
 
+  // соответствие типа жилого объекта с его минимальной ценой
+  var offerTypePrice = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
   // Создадим массив объявлений и копию массива заголовков
   var offer = [];
   var offerTitles = TITLES.slice();
@@ -85,12 +100,14 @@
   };
 
   window.data = {
-    offerType: {
-      flat: 'Квартира',
-      house: 'Дом',
-      bungalo: 'Бунгало',
-      palace: 'Дворец'
-    },
+    arrOfferTypes: TYPES.slice(),
+    arrTypes: TYPES.map(function (elem) {
+      return offerType[elem];
+    }),
+    arrPrices: TYPES.map(function (elem) {
+      return offerTypePrice[elem];
+    }),
+    arrOfferChecks: CHECKS.slice(),
     generateAds: function () {
       for (var i = 0; i < NUMBER_PINS; i++) {
         // измение адрес изображения
