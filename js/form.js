@@ -62,6 +62,7 @@
     }
   });
 
+  // синхронизируем время заселения и выселения при изменении поля
   // Автоввод времени выезда при изменении времени въезда
   var onChangeTimeIn = function () {
     window.synchronizeFields(userCheckinHous, userCheckoutHous, window.data.arrOfferChecks, window.data.arrOfferChecks, syncValues);
