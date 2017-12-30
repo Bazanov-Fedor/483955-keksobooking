@@ -2,8 +2,6 @@
 
 (function () {
 
-  // высота пина на карте
-  var PIN_Y = 46;
   // часть шаблона, пин на карте
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 
@@ -15,7 +13,7 @@
 
   // по горизонтали
   var pinOffsetY = function (y) {
-    return (y - PIN_Y) + 'px';
+    return (y - window.PIN_Y) + 'px';
   };
 
   // Добавляем функцию создания маркера в глобальную область видимости

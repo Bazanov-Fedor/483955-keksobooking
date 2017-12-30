@@ -1,9 +1,13 @@
 'use strict';
 
 (function () {
+
+  // Массив объектов недвижимости
   var offer = [];
   // контейнер со списком марекров
   var pinsContainer = document.querySelector('.map__pins');
+  // Найдём блок в котором размещаются пины на карте
+  var pinsoverlay = document.querySelector('.map__pinsoverlay');
   // Фрагмент документа, который формируется для вставки в документ
   var fragmentPin = document.createDocumentFragment();
 
@@ -23,42 +27,34 @@
     window.showCard.renderAndOpen(evt.target, offer, pinsContainer);
   };
 
-  // Обработчики на элементах
   // Делаем страницу доступной для работы пользователя
   window.pinUser.addEventListener('mouseup', onPinMouseUp);
   // Клик на маркер ловим на контейнере
   pinsContainer.addEventListener('click', onPinClick);
 
+  // Данные успешно загружены
+  var successHandler = function (arrData) {
+    arrData.forEach(window.pin.renderPin, fragmentPin);
+    offer = arrData.slice();
+    // Делаем страницу доступной для работы пользователя
+    window.pinUser.addEventListener('mouseup', onPinMouseUp);
+  };
 
-  // Создаем и заполняем данными массив объектов недвижимости
-  offer = window.data.generateAds();
-  // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
-  offer.forEach(window.pin.renderPin, fragmentPin);
+  // Создаем и скрываем окно для информирования пользователя о возможных ошибках
+  window.backend.makeMessageError();
+  // Загружаем данные с сервера
+  window.backend.load(successHandler, window.backend.errorHandler);
   // Добавляем карточку недвижимости на страницу и скрываем ее
   window.map.appendChild(window.showCard.renderAndOpen(window.pinUser, offer[0], pinsContainer));
 
-  // ---------- module5-task2  ----------  //
   // Реализуем перемещение пользовательского пина на карте и запись координат в форму подачи объявления
-
-  // Характеристики пина - его высота и высота его 'острия'
-  var USER_PIN_HEIGHT = 65;
-  var ARROW_PIN_HEIGHT = 22;
-
-  // Размещение пина ограниченно координатами по вертикалии
-  var pinBorder = {
-    min: 100,
-    max: 500
-  };
-
-  // Найдём блок в котором размещаются пины на карте
-  var pinsoverlay = document.querySelector('.map__pinsoverlay');
-
   var getCoords = function (elem, container) {
     var box = elem.getBoundingClientRect();
     var boxOverlay = container.getBoundingClientRect();
-    return 'x: ' + Math.round((box.left - boxOverlay.left + box.width / 2)) + ' y: ' + Math.round((box.bottom + pageYOffset + ARROW_PIN_HEIGHT));
+    var x = Math.round((box.left - boxOverlay.left + box.width / 2));
+    var y = Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
+    return 'x: ' + x + ' y: ' + y;
   };
-
 
   // Реализация перетаскивания пользовательского пина
   var onPinuserMousedown = function (evt) {
@@ -86,8 +82,13 @@
       };
 
       window.pinUser.style.left = (window.pinUser.offsetLeft - shift.x) + 'px';
-      if ((window.pinUser.offsetTop - shift.y) >= (pinBorder.min - (USER_PIN_HEIGHT / 2 + ARROW_PIN_HEIGHT)) && (window.pinUser.offsetTop - shift.y) <= (pinBorder.max - (USER_PIN_HEIGHT / 2 + ARROW_PIN_HEIGHT))) {
-        window.pinUser.style.top = (window.pinUser.offsetTop - shift.y) + 'px';
+      // координата с учётом размера пина
+      var top = window.pinUser.offsetTop - shift.y;
+      // учитываю translate и высоту острия пина
+      var height = window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT;
+
+      if (top >= (window.PIN_BORDER.MIN - height) && top <= (window.PIN_BORDER.MAX - height)) {
+        window.pinUser.style.top = top + 'px';
       }
     };
 
