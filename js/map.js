@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+
+  // Массив объектов недвижимости
   var offer = [];
   // контейнер со списком марекров
   var pinsContainer = document.querySelector('.map__pins');
@@ -29,20 +31,22 @@
   // Клик на маркер ловим на контейнере
   pinsContainer.addEventListener('click', onPinClick);
 
+  // Данные успешно загружены
+  var successHandler = function (arrData) {
+    arrData.forEach(window.pin.renderPin, fragmentPin);
+    offer = arrData.slice();
+    // Делаем страницу доступной для работы пользователя
+    window.pinUser.addEventListener('mouseup', onPinMouseUp);
+  };
 
-  // Создаем и заполняем данными массив объектов недвижимости
-  // offer = window.data.generateAds();
+  // Создаем и скрываем окно для информирования пользователя о возможных ошибках
+  window.backend.makeMessageError();
   // Загружаем данные с сервера
-  window.backend.load(successHandler, errorHandler);
-
-  // Переносим данные из массива объектов во фрагмент с маркерами для вставки на страницу
-  offer.forEach(window.pin.renderPin, fragmentPin);
+  window.backend.load(successHandler, window.backend.errorHandler);
   // Добавляем карточку недвижимости на страницу и скрываем ее
   window.map.appendChild(window.showCard.renderAndOpen(window.pinUser, offer[0], pinsContainer));
 
-  // ---------- module5-task2  ----------  //
   // Реализуем перемещение пользовательского пина на карте и запись координат в форму подачи объявления
-
   // Характеристики пина - его высота и высота его 'острия'
   var USER_PIN_HEIGHT = 65;
   var ARROW_PIN_HEIGHT = 22;

@@ -1,7 +1,26 @@
 'use strict';
 
 (function () {
-// объект соответствия количества гостевых комант и возможных гостей
+  // тип помещения в объявлении
+  var TYPES = [
+    'flat',
+    'house',
+    'bungalo',
+    'palace'
+  ];
+
+  // время регистрации и выезда в объявлении
+  var CHECKS = ['12:00', '13:00', '14:00'];
+
+  // соответствие типа жилого объекта с его минимальной ценой
+  var offerTypePrice = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
+  // объект соответствия количества гостевых комант и возможных гостей
   var guestRooms = {
     1: [1],
     2: [2, 1],
@@ -19,6 +38,22 @@
   var roomHous = window.form.querySelector('#room_number');
   var capacityHous = window.form.querySelector('#capacity');
   var buttonSubmit = window.form.querySelector('.form__submit');
+
+  var arrPrices = TYPES.map(function (elem) {
+    return offerTypePrice[elem];
+  });
+
+  // Функция сброса полей формы в начальное состояние
+  var resetForm = function () {
+    userTitle.placeholder = 'Милая, но очень уютная квартирка в центре Токио';
+    window.userAdres.value = window.pinUser.address;
+    userTypeOffer.value = 'flat';
+    userOfferPrice.value = '5000';
+    userCheckinHous.value = '12:00';
+    userCheckoutHous.value = '12:00';
+    roomHous.value = '1';
+    capacityHous.value = '1';
+  };
 
   // Функции обратного вызова для синхронизации значений полей формы
   var syncValues = function (element, value) {
@@ -65,17 +100,17 @@
   // синхронизируем время заселения и выселения при изменении поля
   // Автоввод времени выезда при изменении времени въезда
   var onChangeTimeIn = function () {
-    window.synchronizeFields(userCheckinHous, userCheckoutHous, window.data.arrOfferChecks, window.data.arrOfferChecks, syncValues);
+    window.synchronizeFields(userCheckinHous, userCheckoutHous, CHECKS, CHECKS, syncValues);
   };
 
   // Автоввод времени въезда при изменении времени выезда
   var onChangeTimeOut = function () {
-    window.synchronizeFields(userCheckoutHous, userCheckinHous, window.data.arrOfferChecks, window.data.arrOfferChecks, syncValues);
+    window.synchronizeFields(userCheckoutHous, userCheckinHous, CHECKS, CHECKS, syncValues);
   };
 
   // Изменение минимальной стоимости жилья
   var onChangeType = function () {
-    window.synchronizeFields(userTypeOffer, userOfferPrice, window.data.arrOfferTypes, window.data.arrPrices, syncValueWithMin);
+    window.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, arrPrices, syncValueWithMin);
   };
 
   // ативация и отключение опции (добавляем/удаляем класс hidden)
@@ -112,6 +147,12 @@
   // вызываем функицию, чтоб она отработала сразу при открытии окна
   onCangeRomsGuest();
 
+  // Отправка формы на сервер
+  var onSubmitForm = function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(window.form), resetForm, window.backend.errorHandler);
+  };
+
   // синхронизация времени вьезда
   userCheckinHous.addEventListener('change', onChangeTimeIn);
   // синхронизация времени выезда
@@ -120,6 +161,9 @@
   userTypeOffer.addEventListener('change', onChangeType);
   // проверка комнат
   roomHous.addEventListener('change', onCangeRomsGuest);
+  // Событие отправки формы на сервер
+  buttonSubmit.addEventListener('submit', onSubmitForm);
+
 
   // Обработчик для проверки всей полей формы перед отправкой по клику на submit
   buttonSubmit.addEventListener('click', function () {

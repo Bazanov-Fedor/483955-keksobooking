@@ -1,13 +1,14 @@
 'use strict';
 
 (function () {
+
   // код клавиш для обработчиков
   var keyCode = {
     ESC: 27,
     ENTER: 13
   };
 
-  // шаблон
+  // шаблон подачи объявлений
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var mapCard = mapCardTemplate.cloneNode(true);
   // кнопка закрытия карточки объявления
@@ -21,27 +22,32 @@
       activPin.classList.remove('map__pin--active');
     }
   };
+
   // Реакция на нажатие ESC
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === keyCode.ESC) {
       closePopup();
     }
   };
+
   // Закрыть карточку мышкой
   var onCardCloseClick = function () {
     closePopup();
   };
+
   // Закрыть карточку с клавиатуры
   var onCardCloseEnterPress = function (evt) {
     if (evt.keyCode === keyCode.ENTER) {
       closePopup();
     }
   };
+
   // Открыть карточку
   var openPopup = function () {
     mapCard.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
   };
+
   // Закрыть карточку
   var closePopup = function () {
     mapCard.classList.add('hidden');
