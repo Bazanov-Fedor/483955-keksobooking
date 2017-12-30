@@ -13,7 +13,7 @@
   var CHECKS = ['12:00', '13:00', '14:00'];
 
   // соответствие типа жилого объекта с его минимальной ценой
-  var offerTypePrice = {
+  var OFFER_TYPE_PRICE = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
@@ -21,7 +21,7 @@
   };
 
   // объект соответствия количества гостевых комант и возможных гостей
-  var guestRooms = {
+  var GUEST_ROOMS = {
     1: [1],
     2: [2, 1],
     3: [3, 2, 1],
@@ -40,7 +40,7 @@
   var buttonSubmit = window.form.querySelector('.form__submit');
 
   var arrPrices = TYPES.map(function (elem) {
-    return offerTypePrice[elem];
+    return OFFER_TYPE_PRICE[elem];
   });
 
   // Функция сброса полей формы в начальное состояние
@@ -124,7 +124,7 @@
   // зависимость количества гостей от количества комнат
   var onCangeRomsGuest = function () {
     var capacitySelectHous = capacityHous.options.length;
-    var capacitySelectRooms = guestRooms[roomHous.value];
+    var capacitySelectRooms = GUEST_ROOMS[roomHous.value];
     var capacitySelecting = capacitySelectRooms.length;
     [].forEach.call(capacityHous.options, activateFormSelect);
 

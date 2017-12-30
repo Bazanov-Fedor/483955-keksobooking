@@ -6,6 +6,8 @@
   var offer = [];
   // контейнер со списком марекров
   var pinsContainer = document.querySelector('.map__pins');
+  // Найдём блок в котором размещаются пины на карте
+  var pinsoverlay = document.querySelector('.map__pinsoverlay');
   // Фрагмент документа, который формируется для вставки в документ
   var fragmentPin = document.createDocumentFragment();
 
@@ -25,7 +27,6 @@
     window.showCard.renderAndOpen(evt.target, offer, pinsContainer);
   };
 
-  // Обработчики на элементах
   // Делаем страницу доступной для работы пользователя
   window.pinUser.addEventListener('mouseup', onPinMouseUp);
   // Клик на маркер ловим на контейнере
@@ -47,25 +48,11 @@
   window.map.appendChild(window.showCard.renderAndOpen(window.pinUser, offer[0], pinsContainer));
 
   // Реализуем перемещение пользовательского пина на карте и запись координат в форму подачи объявления
-  // Характеристики пина - его высота и высота его 'острия'
-  var USER_PIN_HEIGHT = 65;
-  var ARROW_PIN_HEIGHT = 22;
-
-  // Размещение пина ограниченно координатами по вертикалии
-  var pinBorder = {
-    min: 100,
-    max: 500
-  };
-
-  // Найдём блок в котором размещаются пины на карте
-  var pinsoverlay = document.querySelector('.map__pinsoverlay');
-
   var getCoords = function (elem, container) {
     var box = elem.getBoundingClientRect();
     var boxOverlay = container.getBoundingClientRect();
-    return 'x: ' + Math.round((box.left - boxOverlay.left + box.width / 2)) + ' y: ' + Math.round((box.bottom + pageYOffset + ARROW_PIN_HEIGHT));
+    return 'x: ' + Math.round((box.left - boxOverlay.left + box.width / 2)) + ' y: ' + Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
   };
-
 
   // Реализация перетаскивания пользовательского пина
   var onPinuserMousedown = function (evt) {
@@ -93,7 +80,7 @@
       };
 
       window.pinUser.style.left = (window.pinUser.offsetLeft - shift.x) + 'px';
-      if ((window.pinUser.offsetTop - shift.y) >= (pinBorder.min - (USER_PIN_HEIGHT / 2 + ARROW_PIN_HEIGHT)) && (window.pinUser.offsetTop - shift.y) <= (pinBorder.max - (USER_PIN_HEIGHT / 2 + ARROW_PIN_HEIGHT))) {
+      if ((window.pinUser.offsetTop - shift.y) >= (window.PIN_BORDER.MIN - (window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT)) && (window.pinUser.offsetTop - shift.y) <= (window.PIN_BORDER.MAX - (window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT))) {
         window.pinUser.style.top = (window.pinUser.offsetTop - shift.y) + 'px';
       }
     };

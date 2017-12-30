@@ -2,7 +2,7 @@
 
 (function () {
   // соответствие типов жилья в объявлении
-  var offerType = {
+  var OFFER_TYPE = {
     flat: 'Квартира',
     house: 'Дом',
     bungalo: 'Бунгало',
@@ -15,7 +15,7 @@
   };
 
   // Создадим строку для вставки фотографий
-  // добавил размер, т.к. в разметке не стилей для фотографий
+  // добавил размер, т.к. в css нет стилей для фотографий
   var getStringPictures = function (elem) {
     return '<li><img src="' + elem + '"width="50"></li>';
   };
@@ -50,7 +50,7 @@
       mapCard.querySelector('h3').textContent = offerObject.offer.title;
       mapCard.querySelector('.popup__price').innerHTML = offerObject.offer.price + ' &#x20bd;/ночь';
       mapCard.querySelector('small').textContent = offerObject.offer.address;
-      mapCard.querySelector('h4').textContent = offerType[offerObject.offer.type];
+      mapCard.querySelector('h4').textContent = OFFER_TYPE[offerObject.offer.type];
       mapCardP[2].textContent = offerObject.offer.rooms + makeCorrectTextRooms(offerObject) + offerObject.offer.guests + makeCorrectTextGuests(offerObject);
       mapCardP[3].textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
       mapCardP[4].textContent = offerObject.offer.description;

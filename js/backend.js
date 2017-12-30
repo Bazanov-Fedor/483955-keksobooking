@@ -1,20 +1,6 @@
 'use strict';
 (function () {
 
-  //  Время ожидания ответа от сервера
-  var TIME_OUT = 5000;
-
-  // Код при успешном соединении с сервером
-  var CODE_SUCSESS = 200;
-
-  // Сообщения об ошибках
-  var Messages = {
-    ERROR_NET: 'Произошла ошибка соединения',
-    ERROR_TIME: 'Запрос не успел выполниться за '
-  };
-
-  // путь на сервер
-  var URL = 'https://1510.dump.academy/keksobooking';
   // Создадим элемент в котором будет возникать ошибка
   var cloud = document.createElement('div');
 
@@ -24,7 +10,7 @@
     xhr.responseType = 'json';
     // Событие окончания загрузки
     xhr.addEventListener('load', function () {
-      if (xhr.status === CODE_SUCSESS) {
+      if (xhr.status === window.CODE_SUCSESS) {
         onSuccess(xhr.response);
       } else {
         onError(xhr.response);
@@ -33,14 +19,14 @@
 
     // Обработка ошибки во время загрузки
     xhr.addEventListener('error', function () {
-      onError(Messages.ERROR_NET);
+      onError(window.MESSAGES.ERROR_NET);
     });
 
     // Обработка слишком долгого ожидания загрузки
     xhr.addEventListener('timeout', function () {
-      onError(Messages.ERROR_TIME + xhr.timeout + 'мс');
+      onError(window.MESSAGES.ERROR_TIME + xhr.timeout + 'мс');
     });
-    xhr.timeout = TIME_OUT;
+    xhr.timeout = window.TIME_OUT;
     return xhr;
   };
 
@@ -48,13 +34,13 @@
   window.backend = {
     load: function (onSuccess, onErrorLoad) {
       var xhr = makeRequest(onSuccess, onErrorLoad);
-      xhr.open('GET', URL + '/data');
+      xhr.open('GET', window.URL + '/data');
       xhr.send();
     },
 
     save: function (data, onSuccess, onErrorSave) {
       var xhr = makeRequest(onSuccess, onErrorSave);
-      xhr.open('POST', URL);
+      xhr.open('POST', window.URL);
       xhr.send(data);
     },
 

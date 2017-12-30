@@ -2,12 +2,6 @@
 
 (function () {
 
-  // код клавиш для обработчиков
-  var keyCode = {
-    ESC: 27,
-    ENTER: 13
-  };
-
   // шаблон подачи объявлений
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var mapCard = mapCardTemplate.cloneNode(true);
@@ -25,7 +19,7 @@
 
   // Реакция на нажатие ESC
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === keyCode.ESC) {
+    if (evt.keyCode === window.KEY_CODE.ESC) {
       closePopup();
     }
   };
@@ -37,7 +31,7 @@
 
   // Закрыть карточку с клавиатуры
   var onCardCloseEnterPress = function (evt) {
-    if (evt.keyCode === keyCode.ENTER) {
+    if (evt.keyCode === window.KEY_CODE.ENTER) {
       closePopup();
     }
   };
