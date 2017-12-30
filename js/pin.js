@@ -1,8 +1,7 @@
 'use strict';
-
 (function () {
 
-  // часть шаблона, пин на карте
+  // Часть шаблона, пин на карте
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 
   // Вычисление смещения пина из-за его размеров
@@ -11,7 +10,6 @@
     return x + 'px';
   };
 
-  // по горизонтали
   var pinOffsetY = function (y) {
     return (y - window.PIN_Y) + 'px';
   };
@@ -30,4 +28,4 @@
       return this;
     }
   };
-}());
+})();

@@ -1,7 +1,8 @@
 'use strict';
+
 (function () {
 
-  // Создадим элемент в котором будет возникать ошибка
+  // Создадим элемент в котором будет возникать сообщение об ошибке
   var cloud = document.createElement('div');
 
   // Функция создания запроса к серверу
@@ -41,8 +42,8 @@
     },
 
     // Функция создания элемента с сообщением об ошибке
-    makeMessageError: function () {
-      cloud.style.zIndex = '50';
+    createMessageError: function () {
+      cloud.style.zIndex = '100';
       cloud.style.margin = '10px auto';
       cloud.style.textAlign = 'center';
       cloud.style.backgroundColor = 'magenta';

@@ -1,12 +1,11 @@
 'use strict';
 
 (function () {
-  // на карте отображается не более пяти пинов других объявлений
-  var PIN_ORDERS = 5;
 
   // Найдём элементы с которыми будем работать над фильтрацией объявлений
   // блок с выбором фильтров
   var blockFilter = document.querySelector('.map__filters');
+
   // Фильтры:
   // фильтр типа помещения
   var filterType = blockFilter.querySelector('#housing-type');
@@ -19,8 +18,11 @@
   // фильтр приемуществ
   var filterFeatures = blockFilter.querySelector('#housing-features');
 
+  // Отмеченные пользователем удобства
+  var checkedFeatures = [];
+
   // объект c текущими значениями фильтров
-  var FilterValue = {
+  var FILTER_VALUE = {
     type: 'any',
     price: 'any',
     rooms: 'any',
@@ -29,24 +31,21 @@
 
   // Массива полученных с сервера данных
   var dataInfo = [];
-  // Выбранные приемущества
-  var selectedAdvantages = [];
 
   var filterFunctions = [
-
-    // Фильтр по типу жилья
+    // Фильтр - тип жилья
     function (arr) {
-      if (FilterValue.type !== 'any') {
+      if (FILTER_VALUE.type !== 'any') {
         arr = arr.filter(function (element) {
-          return element.offer.type === FilterValue.type;
+          return element.offer.type === FILTER_VALUE.type;
         });
       }
       return arr;
     },
 
-    // Фильтр по стоимости
+    // Фильтр - стоимости
     function (arr) {
-      switch (FilterValue.price) {
+      switch (FILTER_VALUE.price) {
         case 'any':
           break;
         case 'low':
@@ -67,79 +66,76 @@
       return arr;
     },
 
-    // Фильтр по количеству комнат
+    // Фильтр - количество комнат
     function (arr) {
-      if (FilterValue.rooms !== 'any') {
+      if (FILTER_VALUE.rooms !== 'any') {
         arr = arr.filter(function (element) {
-          return element.offer.rooms === parseInt(FilterValue.rooms, 10);
+          return element.offer.rooms === parseInt(FILTER_VALUE.rooms, 10);
         });
       }
       return arr;
     },
 
-    // Фильтр по количеству гостей
+    // Фильтр - количество гостей
     function (arr) {
-      if (FilterValue.guests !== 'any') {
+      if (FILTER_VALUE.guests !== 'any') {
         arr = arr.filter(function (element) {
-          return element.offer.guests === parseInt(FilterValue.guests, 10);
+          return element.offer.guests === parseInt(FILTER_VALUE.guests, 10);
         });
       }
       return arr;
     },
 
-    // Фильтр по удобствам
+    // Фильтр - выбранные удобства
     function (arr) {
       return arr.filter(function (element) {
-        return selectedAdvantages.every(function (currentFeature) {
+        return checkedFeatures.every(function (currentFeature) {
           return element.offer.features.includes(currentFeature);
         });
       });
     }
   ];
 
+  // Функции отвечающие за фильтрацию
   var onFiltersChange = function (evt) {
     // Выставляем значение сработавшего фильтра в объекте текущих значений фильтров
     var filterName = evt.target.name.substring(8);
-    FilterValue[filterName] = evt.target.value;
+    FILTER_VALUE[filterName] = evt.target.value;
     // Копируем исходные данные для фильтрования
-    window.mapFilters.filteredData = dataInfo.slice();
-    // Получаем список отмеченных чекбоксов
+    window.filters.filteredData = dataInfo.slice();
+    // Получаем список выбранны преимуществ
     var checkedElements = filterFeatures.querySelectorAll('input[type="checkbox"]:checked');
-    // Преобразуем список в массив строк
-    selectedAdvantages = [].map.call(checkedElements, function (element) {
+    // Преобразуем список в массив
+    checkedFeatures = [].map.call(checkedElements, function (element) {
       return element.value;
     });
 
-    // Получаем массив данных после обработки системой фильтров
-    filterFunctions.forEach(function (element) {
-      window.mapFilters.filteredData = element(window.mapFilters.filteredData);
+    // Массив после применения фильтров
+    filterFunctions.forEach(function (getFiltered) {
+      window.filters.filteredData = getFiltered(window.filters.filteredData);
     });
 
-    // Обрезаем полученный массив до необходимой длинны
-    if (window.mapFilters.filteredData.length > PIN_ORDERS) {
-      window.mapFilters.filteredData = window.mapFilters.filteredData.slice(0, PIN_ORDERS);
+    // Получаем массив нужной длинны
+    if (window.filters.filteredData.length > window.PIN_ORDERS) {
+      window.filters.filteredData = window.filters.filteredData.slice(0, window.PIN_ORDERS);
     }
 
     // Добавляем пины на страницу через установленный тайм-аут
     window.debounce(window.map.appendPins);
   };
-  // ==========================================================================
-  // Обработчики событий изменения фильтров
-  // ==========================================================================
+
+  //  ----------- Обработчики для работы фильтров  ----------  //
   filterType.addEventListener('change', onFiltersChange);
   filterPrice.addEventListener('change', onFiltersChange);
   filterRooms.addEventListener('change', onFiltersChange);
   filterGuests.addEventListener('change', onFiltersChange);
   filterFeatures.addEventListener('change', onFiltersChange);
 
-  // Экспортируем функцию, принимающую массив данных с сервера,
-  // и отфильтрованный массив данных
-  // ==========================================================================
-  window.mapFilters = {
+  window.filters = {
     filteredData: [],
     transferData: function (data) {
       dataInfo = data.slice();
-      this.filteredData = data.slice(0, PIN_ORDERS);
+      this.filteredData = data.slice(0, window.PIN_ORDERS);
     },
   };
 })();
