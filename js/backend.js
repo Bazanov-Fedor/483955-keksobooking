@@ -10,11 +10,7 @@
     xhr.responseType = 'json';
     // Событие окончания загрузки
     xhr.addEventListener('load', function () {
-      if (xhr.status === window.CODE_SUCSESS) {
-        onSuccess(xhr.response);
-      } else {
-        onError(xhr.response);
-      }
+      return xhr.status === window.CODE_SUCSESS ? onSuccess(xhr.response) : onError(xhr.response);
     });
 
     // Обработка ошибки во время загрузки

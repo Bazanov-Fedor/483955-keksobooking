@@ -51,7 +51,9 @@
   var getCoords = function (elem, container) {
     var box = elem.getBoundingClientRect();
     var boxOverlay = container.getBoundingClientRect();
-    return 'x: ' + Math.round((box.left - boxOverlay.left + box.width / 2)) + ' y: ' + Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
+    var x = Math.round((box.left - boxOverlay.left + box.width / 2));
+    var y = Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
+    return 'x: ' + x + ' y: ' + y;
   };
 
   // Реализация перетаскивания пользовательского пина
@@ -80,8 +82,13 @@
       };
 
       window.pinUser.style.left = (window.pinUser.offsetLeft - shift.x) + 'px';
-      if ((window.pinUser.offsetTop - shift.y) >= (window.PIN_BORDER.MIN - (window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT)) && (window.pinUser.offsetTop - shift.y) <= (window.PIN_BORDER.MAX - (window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT))) {
-        window.pinUser.style.top = (window.pinUser.offsetTop - shift.y) + 'px';
+      // координата с учётом размера пина
+      var top = window.pinUser.offsetTop - shift.y;
+      // учитываю translate и высоту острия пина
+      var height = window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT;
+
+      if (top >= (window.PIN_BORDER.MIN - height) && top <= (window.PIN_BORDER.MAX - height)) {
+        window.pinUser.style.top = top + 'px';
       }
     };
 
