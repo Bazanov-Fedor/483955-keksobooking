@@ -33,9 +33,11 @@
   pinsContainer.addEventListener('click', onPinClick);
 
   // Данные успешно загружены
-  var successHandler = function (arrData) {
-    arrData.forEach(window.pin.renderPin, fragmentPin);
-    offer = arrData.slice();
+  var onSuccessHandler = function (data) {
+    window.mapFilters.transferData(data);
+    window.backend.removeError();
+    window.mapFilters.filteredData.forEach(window.pin.renderPin, fragmentPin);
+    offer = data.slice();
     // Делаем страницу доступной для работы пользователя
     window.pinUser.addEventListener('mouseup', onPinMouseUp);
   };
@@ -43,7 +45,7 @@
   // Создаем и скрываем окно для информирования пользователя о возможных ошибках
   window.backend.makeMessageError();
   // Загружаем данные с сервера
-  window.backend.load(successHandler, window.backend.errorHandler);
+  window.backend.load(onSuccessHandler, window.backend.errorHandler);
   // Добавляем карточку недвижимости на страницу и скрываем ее
   window.map.appendChild(window.showCard.renderAndOpen(window.pinUser, offer[0], pinsContainer));
 
@@ -109,4 +111,16 @@
   // Перемещение пина на карте
   window.pinUser.addEventListener('mousedown', onPinuserMousedown);
   getCoords(window.pinUser, pinsoverlay);
+
+  return {
+    // Функция добавления маркеров на страницу
+    appendPins: function () {
+      // Очищаем контейнер с маркерами от предыдущего результата
+      window.util.clearContainer(pinsContainer, 2);
+      // Заполняем фрагмент в соответствии с отфильтрованным массивом
+      window.mapFilters.filteredData.forEach(window.pin.renderPin, fragmentPin);
+      // Добавляем фрагмент на страницу
+      pinsContainer.appendChild(fragmentPin);
+    }
+  };
 })();
