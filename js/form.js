@@ -141,13 +141,13 @@
   //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
     // минимальное и максимальное количество знаков в заголовке
-    var minLengthTitle = 30;
-    var maxLengthTitle = 100;
+    var MIN_LENGTH_TITLE = 30;
+    var MAX_LENGTH_TITLE = 100;
     var target = evt.target;
-    if (target.value.length < minLengthTitle) {
+    if (target.value.length < MIN_LENGTH_TITLE) {
       target.setAttribute('style', 'border: 2px solid red;');
       target.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
-    } else if (target.value.length > maxLengthTitle) {
+    } else if (target.value.length > MAX_LENGTH_TITLE) {
       target.setAttribute('style', 'border: 2px solid red;');
       target.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
     } else {
@@ -158,15 +158,15 @@
   //  -----------  валидация цены на определённый тип жилья  -----------  //
   userOfferPrice.addEventListener('change', function (evt) {
     // минимальная и максимальная цена
-    var minPrice = 0;
-    var maxPrice = 1000000;
+    var MIN_PRICE = 0;
+    var MAX_PRICE = 1000000;
     var target = evt.target;
-    if (target.value < minPrice) {
+    if (target.value < MIN_PRICE) {
       target.setAttribute('style', 'border: 2px solid red;');
-      target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + minPrice);
-    } else if (target.value > maxPrice) {
+      target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + MIN_PRICE);
+    } else if (target.value > MAX_PRICE) {
       target.setAttribute('style', 'border: 2px solid red;');
-      target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + maxPrice);
+      target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + MAX_PRICE);
     } else {
       target.setCustomValidity('');
     }
