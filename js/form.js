@@ -23,10 +23,10 @@
 
   // объект соответствия количества гостевых комант и возможных гостей
   var GUEST_ROOMS = {
-    1: [1],
-    2: [2, 1],
-    3: [3, 2, 1],
-    100: [0]
+    1: ['1'],
+    2: ['2', '1'],
+    3: ['3', '2', '1'],
+    100: ['0']
   };
 
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
@@ -155,7 +155,19 @@
     }
   });
 
+  // Проверка введенной суммы на валидность
+  var onPriceInvalid = function () {
+    if (userOfferPrice.validity.rangeUnderflow) {
+      userOfferPrice.setCustomValidity('Стоимость жилья ниже рекомендованной');
+    } else if (userOfferPrice.validity.rangeOverflow) {
+      userOfferPrice.setCustomValidity('Стоимость жилья слишком высока');
+    } else {
+      userOfferPrice.setCustomValidity('');
+    }
+  };
+
   //  -----------  валидация цены на определённый тип жилья  -----------  //
+  userOfferPrice.addEventListener('invalid', onPriceInvalid);
   userOfferPrice.addEventListener('change', function (evt) {
     // минимальная и максимальная цена
     var MIN_PRICE = 0;
@@ -181,6 +193,7 @@
   // События изменения количества комнат и гостей
   roomHous.addEventListener('change', onRoomNumberChange);
   capacityHous.addEventListener('change', onCapacityChange);
+
   // Событие отправки формы на сервер
   form.addEventListener('submit', onFormSubmit);
 
