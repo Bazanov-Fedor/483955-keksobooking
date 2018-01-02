@@ -6,6 +6,15 @@
   // Контейнер, скрывающий карту
   var pinsoverlay = document.querySelector('.map__pinsoverlay');
 
+  var BorderY = {
+    MIN: 100,
+    MAX: 500
+  };
+  // Высота главного маркера
+  var HEIGHT_MAIN_PIN = 65;
+  // Высота хвостика главного маркера
+  var HEIGHT_MAIN_TAIL = 22;
+
   //  ---------- обработчики событий на пине пользователя  ----------  //
   // Перетаскиваем центральный маркер
   var onPinUserMousedown = function (evt) {
@@ -33,13 +42,8 @@
       };
 
       pinUser.style.left = (pinUser.offsetLeft - shift.x) + 'px';
-      // координата с учётом размера пина
-      var top = window.pinUser.offsetTop - shift.y;
-      // учитываю translate и высоту острия пина
-      var height = window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT;
-
-      if (top >= (window.PIN_BORDER.MIN - height) && top <= (window.PIN_BORDER.MAX - height)) {
-        window.pinUser.style.top = top + 'px';
+      if ((pinUser.offsetTop - shift.y) >= (BorderY.MIN - (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL)) && (pinUser.offsetTop - shift.y) <= (BorderY.MAX - (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL))) {
+        pinUser.style.top = (pinUser.offsetTop - shift.y) + 'px';
       }
     };
 
@@ -67,9 +71,7 @@
     getCoords: function () {
       var box = pinUser.getBoundingClientRect();
       var boxOverlay = pinsoverlay.getBoundingClientRect();
-      var x = Math.round((box.left - boxOverlay.left + box.width / 2));
-      var y = Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
-      return 'x: ' + x + ' y: ' + y;
+      return Math.round((box.left - boxOverlay.left + box.width / 2)) + ', ' + Math.round((box.bottom + pageYOffset + HEIGHT_MAIN_TAIL));
     }
   };
 })();
