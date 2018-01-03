@@ -6,10 +6,19 @@
   // Контейнер, скрывающий карту
   var pinsoverlay = document.querySelector('.map__pinsoverlay');
 
-  var BorderY = {
+  // Ограничение перемещения пользователського пина по карте
+  // Граница по вертикали
+  var BORDER_Y = {
     MIN: 100,
     MAX: 500
   };
+
+  // Граница по горизонтали с учётом ширины самого пина
+  var BORDER_X = {
+    LEFT_LIMIT: 65,
+    RIGHT_LIMIT: pinsoverlay.offsetWidth - 65
+  };
+
   // Высота главного маркера
   var HEIGHT_MAIN_PIN = 65;
   // Высота хвостика главного маркера
@@ -41,9 +50,23 @@
         y: moveEvt.clientY
       };
 
-      pinUser.style.left = (pinUser.offsetLeft - shift.x) + 'px';
-      if ((pinUser.offsetTop - shift.y) >= (BorderY.MIN - (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL)) && (pinUser.offsetTop - shift.y) <= (BorderY.MAX - (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL))) {
-        pinUser.style.top = (pinUser.offsetTop - shift.y) + 'px';
+      var LEFT = pinUser.offsetLeft - shift.x;
+      var TOP = pinUser.offsetTop - shift.y;
+
+      // высота пина с учётом translate и высоты острия пина
+      var HEIGHT_PIN = (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL);
+
+      pinUser.style.left = LEFT + 'px';
+      if (TOP >= (BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (BORDER_Y.MAX - HEIGHT_PIN)) {
+        pinUser.style.top = TOP + 'px';
+      }
+
+      if (LEFT < BORDER_X.LEFT_LIMIT) {
+        pinUser.style.left = BORDER_X.LEFT_LIMIT + 'px';
+      }
+
+      if (LEFT > BORDER_X.RIGHT_LIMIT) {
+        pinUser.style.left = BORDER_X.RIGHT_LIMIT + 'px';
       }
     };
 
@@ -71,7 +94,9 @@
     getCoords: function () {
       var box = pinUser.getBoundingClientRect();
       var boxOverlay = pinsoverlay.getBoundingClientRect();
-      return Math.round((box.left - boxOverlay.left + box.width / 2)) + ', ' + Math.round((box.bottom + pageYOffset + HEIGHT_MAIN_TAIL));
+      var x = Math.round((box.left - boxOverlay.left + box.width / 2));
+      var y = Math.round((box.bottom + pageYOffset + HEIGHT_MAIN_TAIL));
+      return 'x: ' + x + ' y: ' + y;
     }
   };
 })();
