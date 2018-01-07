@@ -7,7 +7,7 @@
   window.USER_PIN_HEIGHT = 65;
   window.ARROW_PIN_HEIGHT = 22;
   // Размещение пина ограниченно координатами по вертикалии
-  window.PIN_BORDER = {
+  window.BORDER_Y = {
     MIN: 100,
     MAX: 500
   };

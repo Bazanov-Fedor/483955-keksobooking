@@ -7,12 +7,6 @@
   var pinsoverlay = document.querySelector('.map__pinsoverlay');
 
   // Ограничение перемещения пользователського пина по карте
-  // Граница по вертикали
-  var BORDER_Y = {
-    MIN: 100,
-    MAX: 500
-  };
-
   // Граница по горизонтали с учётом ширины самого пина
   var BORDER_X = {
     LEFT_LIMIT: 65,
@@ -57,7 +51,7 @@
       var HEIGHT_PIN = (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL);
 
       pinUser.style.left = LEFT + 'px';
-      if (TOP >= (BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (BORDER_Y.MAX - HEIGHT_PIN)) {
+      if (TOP >= (window.BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (window.BORDER_Y.MAX - HEIGHT_PIN)) {
         pinUser.style.top = TOP + 'px';
       }
 

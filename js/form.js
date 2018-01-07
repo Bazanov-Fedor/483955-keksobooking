@@ -10,16 +10,10 @@
     'palace'
   ];
 
+  var MIN_PRICES = [1000, 0, 5000, 10000];
+
   // время регистрации и выезда в объявлении
   var CHECKS = ['12:00', '13:00', '14:00'];
-
-  // соответствие типа жилого объекта с его минимальной ценой
-  var OFFER_TYPE_PRICE = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
 
   // объект соответствия количества гостевых комант и возможных гостей
   var GUEST_ROOMS = {
@@ -92,8 +86,10 @@
 
   // Изменение минимальной стоимости жилья
   var onTypeChange = function () {
-    window.util.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, OFFER_TYPE_PRICE, syncValueWithMin);
+    window.util.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, MIN_PRICES, syncValueWithMin);
   };
+
+  onTypeChange();
 
   // зависимость количества гостей от количества комнат
   var onRoomNumberChange = function () {
