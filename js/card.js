@@ -68,8 +68,9 @@
 
   // текст количества гостей
   var makeCorrectTextGuests = function (offerObject) {
-    var conditionText = (offerObject.offer.guests % 10 === 1 && offerObject.offer.guests !== 11);
-    var text = conditionText === true ? ' гостя' : ' гостей';
+    var textConditionFirst = offerObject.offer.guests % 10 === 1;
+    var textConditionSecond = offerObject.offer.guests !== 11;
+    var text = (textConditionFirst && textConditionSecond) === true ? ' гостя' : ' гостей';
 
     return text;
   };
