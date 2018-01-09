@@ -10,7 +10,13 @@
     'palace'
   ];
 
-  var MIN_PRICES = [1000, 0, 5000, 10000];
+  // минимальная цена на различные объекты недвижимости
+  var MIN_PRICES = [
+    1000,
+    5000,
+    0,
+    10000
+  ];
 
   // время регистрации и выезда в объявлении
   var CHECKS = ['12:00', '13:00', '14:00'];
@@ -88,7 +94,6 @@
   var onTypeChange = function () {
     window.util.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, MIN_PRICES, syncValueWithMin);
   };
-
   onTypeChange();
 
   // зависимость количества гостей от количества комнат
@@ -128,6 +133,9 @@
     }
   };
 
+  onCapacityChange();
+  onRoomNumberChange();
+
   // Отправка формы на сервер
   var onFormSubmit = function (evt) {
     window.backend.save(new FormData(form), resetForm, window.backend.onErrorSave);
@@ -151,20 +159,8 @@
     }
   });
 
-  // Проверка введенной суммы на валидность
-  var onPriceInvalid = function () {
-    if (userOfferPrice.validity.rangeUnderflow) {
-      userOfferPrice.setCustomValidity('Стоимость жилья ниже рекомендованной');
-    } else if (userOfferPrice.validity.rangeOverflow) {
-      userOfferPrice.setCustomValidity('Стоимость жилья слишком высока');
-    } else {
-      userOfferPrice.setCustomValidity('');
-    }
-  };
-
   //  -----------  валидация цены на определённый тип жилья  -----------  //
-  userOfferPrice.addEventListener('invalid', onPriceInvalid);
-  userOfferPrice.addEventListener('change', function (evt) {
+  userOfferPrice.addEventListener('invalid', function (evt) {
     // минимальная и максимальная цена
     var MIN_PRICE = 0;
     var MAX_PRICE = 1000000;
