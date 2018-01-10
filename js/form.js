@@ -133,8 +133,9 @@
     }
   };
 
-  onCapacityChange();
   onRoomNumberChange();
+  onCapacityChange();
+
 
   // Отправка формы на сервер
   var onFormSubmit = function (evt) {
@@ -149,13 +150,14 @@
     var MAX_LENGTH_TITLE = 100;
     var target = evt.target;
     if (target.value.length < MIN_LENGTH_TITLE) {
-      target.setAttribute('style', 'border: 2px solid red;');
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
     } else if (target.value.length > MAX_LENGTH_TITLE) {
-      target.setAttribute('style', 'border: 2px solid red;');
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
     } else {
       target.setCustomValidity('');
+      target.setAttribute('style', 'border: 2px solid #d9d9d3');
     }
   });
 
@@ -166,13 +168,14 @@
     var MAX_PRICE = 1000000;
     var target = evt.target;
     if (target.value < MIN_PRICE) {
-      target.setAttribute('style', 'border: 2px solid red;');
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + MIN_PRICE);
     } else if (target.value > MAX_PRICE) {
-      target.setAttribute('style', 'border: 2px solid red;');
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + MAX_PRICE);
     } else {
       target.setCustomValidity('');
+      target.setAttribute('style', 'border: 2px solid #d9d9d3');
     }
   });
 
