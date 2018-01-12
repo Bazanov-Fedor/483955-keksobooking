@@ -10,23 +10,23 @@
     'palace'
   ];
 
+  // минимальная цена на различные объекты недвижимости
+  var MIN_PRICES = [
+    1000,
+    5000,
+    0,
+    10000
+  ];
+
   // время регистрации и выезда в объявлении
   var CHECKS = ['12:00', '13:00', '14:00'];
 
-  // соответствие типа жилого объекта с его минимальной ценой
-  var OFFER_TYPE_PRICE = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
-
   // объект соответствия количества гостевых комант и возможных гостей
   var GUEST_ROOMS = {
-    1: [1],
-    2: [2, 1],
-    3: [3, 2, 1],
-    100: [0]
+    1: ['1'],
+    2: ['2', '1'],
+    3: ['3', '2', '1'],
+    100: ['0']
   };
 
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
@@ -92,8 +92,9 @@
 
   // Изменение минимальной стоимости жилья
   var onTypeChange = function () {
-    window.util.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, OFFER_TYPE_PRICE, syncValueWithMin);
+    window.util.synchronizeFields(userTypeOffer, userOfferPrice, TYPES, MIN_PRICES, syncValueWithMin);
   };
+  onTypeChange();
 
   // зависимость количества гостей от количества комнат
   var onRoomNumberChange = function () {
@@ -132,6 +133,10 @@
     }
   };
 
+  onRoomNumberChange();
+  onCapacityChange();
+
+
   // Отправка формы на сервер
   var onFormSubmit = function (evt) {
     window.backend.save(new FormData(form), resetForm, window.backend.onErrorSave);
@@ -141,34 +146,36 @@
   //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
     // минимальное и максимальное количество знаков в заголовке
-    var minLengthTitle = 30;
-    var maxLengthTitle = 100;
+    var MIN_LENGTH_TITLE = 30;
+    var MAX_LENGTH_TITLE = 100;
     var target = evt.target;
-    if (target.value.length < minLengthTitle) {
-      target.setAttribute('style', 'border: 2px solid red;');
+    if (target.value.length < MIN_LENGTH_TITLE) {
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Минимальная длина заголовка объявления 30-символов');
-    } else if (target.value.length > maxLengthTitle) {
-      target.setAttribute('style', 'border: 2px solid red;');
+    } else if (target.value.length > MAX_LENGTH_TITLE) {
+      target.setAttribute('style', 'border: 2px solid red');
       target.setCustomValidity('Максимальная длина заголовка объявления 100 символов');
     } else {
       target.setCustomValidity('');
+      target.setAttribute('style', 'border: 2px solid #d9d9d3');
     }
   });
 
   //  -----------  валидация цены на определённый тип жилья  -----------  //
-  userOfferPrice.addEventListener('change', function (evt) {
+  userOfferPrice.addEventListener('invalid', function (evt) {
     // минимальная и максимальная цена
-    var minPrice = 0;
-    var maxPrice = 1000000;
+    var MIN_PRICE = 0;
+    var MAX_PRICE = 1000000;
     var target = evt.target;
-    if (target.value < minPrice) {
-      target.setAttribute('style', 'border: 2px solid red;');
-      target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + minPrice);
-    } else if (target.value > maxPrice) {
-      target.setAttribute('style', 'border: 2px solid red;');
-      target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + maxPrice);
+    if (target.value < MIN_PRICE) {
+      target.setAttribute('style', 'border: 2px solid red');
+      target.setCustomValidity('Стоимость жилья ниже рекомендованной, минимальное значение ' + MIN_PRICE);
+    } else if (target.value > MAX_PRICE) {
+      target.setAttribute('style', 'border: 2px solid red');
+      target.setCustomValidity('Стоимость жилья выше рекомендованной, максимальное значение ' + MAX_PRICE);
     } else {
       target.setCustomValidity('');
+      target.setAttribute('style', 'border: 2px solid #d9d9d3');
     }
   });
 
@@ -181,6 +188,7 @@
   // События изменения количества комнат и гостей
   roomHous.addEventListener('change', onRoomNumberChange);
   capacityHous.addEventListener('change', onCapacityChange);
+
   // Событие отправки формы на сервер
   form.addEventListener('submit', onFormSubmit);
 

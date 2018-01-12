@@ -6,6 +6,18 @@
   // Контейнер, скрывающий карту
   var pinsoverlay = document.querySelector('.map__pinsoverlay');
 
+  // Ограничение перемещения пользователського пина по карте
+  // Граница по горизонтали с учётом ширины самого пина
+  var BORDER_X = {
+    LEFT_LIMIT: 65,
+    RIGHT_LIMIT: pinsoverlay.offsetWidth - 65
+  };
+
+  // Высота главного маркера
+  var HEIGHT_MAIN_PIN = 65;
+  // Высота хвостика главного маркера
+  var HEIGHT_MAIN_TAIL = 22;
+
   //  ---------- обработчики событий на пине пользователя  ----------  //
   // Перетаскиваем центральный маркер
   var onPinUserMousedown = function (evt) {
@@ -32,14 +44,23 @@
         y: moveEvt.clientY
       };
 
-      pinUser.style.left = (pinUser.offsetLeft - shift.x) + 'px';
-      // координата с учётом размера пина
-      var top = window.pinUser.offsetTop - shift.y;
-      // учитываю translate и высоту острия пина
-      var height = window.USER_PIN_HEIGHT / 2 + window.ARROW_PIN_HEIGHT;
+      var LEFT = pinUser.offsetLeft - shift.x;
+      var TOP = pinUser.offsetTop - shift.y;
 
-      if (top >= (window.PIN_BORDER.MIN - height) && top <= (window.PIN_BORDER.MAX - height)) {
-        window.pinUser.style.top = top + 'px';
+      // высота пина с учётом translate и высоты острия пина
+      var HEIGHT_PIN = (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL);
+
+      pinUser.style.left = LEFT + 'px';
+      if (TOP >= (window.BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (window.BORDER_Y.MAX - HEIGHT_PIN)) {
+        pinUser.style.top = TOP + 'px';
+      }
+
+      if (LEFT < BORDER_X.LEFT_LIMIT) {
+        pinUser.style.left = BORDER_X.LEFT_LIMIT + 'px';
+      }
+
+      if (LEFT > BORDER_X.RIGHT_LIMIT) {
+        pinUser.style.left = BORDER_X.RIGHT_LIMIT + 'px';
       }
     };
 
@@ -68,7 +89,7 @@
       var box = pinUser.getBoundingClientRect();
       var boxOverlay = pinsoverlay.getBoundingClientRect();
       var x = Math.round((box.left - boxOverlay.left + box.width / 2));
-      var y = Math.round((box.bottom + pageYOffset + window.ARROW_PIN_HEIGHT));
+      var y = Math.round((box.bottom + pageYOffset + HEIGHT_MAIN_TAIL));
       return 'x: ' + x + ' y: ' + y;
     }
   };

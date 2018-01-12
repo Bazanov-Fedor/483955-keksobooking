@@ -7,7 +7,7 @@
   window.USER_PIN_HEIGHT = 65;
   window.ARROW_PIN_HEIGHT = 22;
   // Размещение пина ограниченно координатами по вертикалии
-  window.PIN_BORDER = {
+  window.BORDER_Y = {
     MIN: 100,
     MAX: 500
   };
@@ -29,4 +29,5 @@
   window.URL = 'https://1510.dump.academy/keksobooking';
   // на карте отображается не более пяти пинов других объявлений
   window.PIN_ORDERS = 5;
+  window.FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 })();

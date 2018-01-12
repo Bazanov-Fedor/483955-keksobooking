@@ -17,15 +17,41 @@
   // состояние маркера
   var activPin = false;
 
-  // Создадим строку для вставки преимущества
-  var getStringFeatures = function (elem) {
-    return '<li class="feature feature--' + elem + '"></li>';
+  // cоздание списка преимуществ объявлений
+  var getListFeatures = function (features) {
+    var list = document.createDocumentFragment();
+
+    features.forEach(function (feature) {
+      var item = document.createElement('li');
+      item.classList.add('feature', 'feature--' + feature);
+      list.appendChild(item);
+    });
+
+    return list;
   };
 
-  // Создадим строку для вставки фотографий
-  // добавил размер, т.к. в css нет стилей для фотографий
-  var getStringPictures = function (elem) {
-    return '<li><img src="' + elem + '"width="50"></li>';
+  // cоздание списка фотографий объявления
+  var getListPhotos = function (photos) {
+    var photoList = document.createDocumentFragment();
+
+    photos.slice(0, 6).forEach(function (photo) {
+      var item = document.createElement('li');
+      var picture = document.createElement('img');
+      picture.width = 50;
+      picture.height = 50;
+      picture.src = photo;
+      item.appendChild(picture);
+      photoList.appendChild(item);
+    });
+
+    return photoList;
+  };
+
+  // очистка списка перед повторным открытием карты объявления
+  var cleanseList = function (element) {
+    while (element.hasChildNodes()) {
+      element.removeChild(element.lastChild);
+    }
   };
 
   // Улучшим текс объявления в карточкаx других пользователей
@@ -42,7 +68,9 @@
 
   // текст количества гостей
   var makeCorrectTextGuests = function (offerObject) {
-    var text = (offerObject.offer.guests % 10 === 1 && offerObject.offer.guests !== 11) === true ? ' гостя' : ' гостей';
+    var textConditionFirst = offerObject.offer.guests % 10 === 1;
+    var textConditionSecond = offerObject.offer.guests !== 11;
+    var text = (textConditionFirst && textConditionSecond) === true ? ' гостя' : ' гостей';
 
     return text;
   };
@@ -52,6 +80,11 @@
     var mapCardP = mapCard.querySelectorAll('p');
     var mapCardList = mapCard.querySelector('.popup__features');
     var mapCardPictures = mapCard.querySelector('.popup__pictures');
+    var featuresList = getListFeatures(offerObject.offer.features);
+    var photosList = getListPhotos(offerObject.offer.photos);
+
+    cleanseList(mapCardList);
+    cleanseList(mapCardPictures);
 
     mapCard.querySelector('img').src = offerObject.author.avatar;
     mapCard.querySelector('h3').textContent = offerObject.offer.title;
@@ -61,12 +94,8 @@
     mapCardP[2].textContent = offerObject.offer.rooms + makeCorrectTextRooms(offerObject) + offerObject.offer.guests + makeCorrectTextGuests(offerObject);
     mapCardP[3].textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
     mapCardP[4].textContent = offerObject.offer.description;
-    mapCardList.innerHTML = '';
-    mapCardList.insertAdjacentHTML('afterBegin', offerObject.offer.features.map(getStringFeatures).join(' '));
-    mapCard.appendChild(mapCardList);
-    mapCardPictures.innerHTML = '';
-    mapCardPictures.insertAdjacentHTML('afterBegin', offerObject.offer.photos.map(getStringPictures).join(' '));
-    mapCard.appendChild(mapCardPictures);
+    mapCardList.appendChild(featuresList);
+    mapCardPictures.appendChild(photosList);
 
     return mapCard;
   };
