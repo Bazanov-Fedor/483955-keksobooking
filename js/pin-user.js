@@ -17,6 +17,8 @@
   var HEIGHT_MAIN_PIN = 65;
   // Высота хвостика главного маркера
   var HEIGHT_MAIN_TAIL = 22;
+  // учёт translate -50% для положения пина
+  var POSITION_CORRECT = 2;
 
   //  ---------- обработчики событий на пине пользователя  ----------  //
   // Перетаскиваем центральный маркер
@@ -48,7 +50,7 @@
       var TOP = pinUser.offsetTop - shift.y;
 
       // высота пина с учётом translate и высоты острия пина
-      var HEIGHT_PIN = (HEIGHT_MAIN_PIN / 2 + HEIGHT_MAIN_TAIL);
+      var HEIGHT_PIN = (HEIGHT_MAIN_PIN / POSITION_CORRECT + HEIGHT_MAIN_TAIL);
 
       pinUser.style.left = LEFT + 'px';
       if (TOP >= (window.BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (window.BORDER_Y.MAX - HEIGHT_PIN)) {
@@ -88,7 +90,7 @@
     getCoords: function () {
       var box = pinUser.getBoundingClientRect();
       var boxOverlay = pinsoverlay.getBoundingClientRect();
-      var x = Math.round((box.left - boxOverlay.left + box.width / 2));
+      var x = Math.round((box.left - boxOverlay.left + box.width / POSITION_CORRECT));
       var y = Math.round((box.bottom + pageYOffset + HEIGHT_MAIN_TAIL));
       return 'x: ' + x + ' y: ' + y;
     }

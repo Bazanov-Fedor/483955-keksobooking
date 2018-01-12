@@ -9,6 +9,18 @@
     palace: 'Дворец'
   };
 
+  // стили для фотографий других объявлений
+  var PICTURE = {
+    WIDTH: 50,
+    HEIGHT: 50
+  };
+
+  // промежуток из которого берём необходимые елементы для метода slice
+  var ELEMENTS = {
+    BEGIN: 0,
+    END: 6
+  };
+
   // Часть шаблона - карточка объекта недвижимости
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var mapCard = mapCardTemplate.cloneNode(true);
@@ -34,11 +46,11 @@
   var getListPhotos = function (photos) {
     var photoList = document.createDocumentFragment();
 
-    photos.slice(0, 6).forEach(function (photo) {
+    photos.slice(ELEMENTS.BEGIN, ELEMENTS.END).forEach(function (photo) {
       var item = document.createElement('li');
       var picture = document.createElement('img');
-      picture.width = 50;
-      picture.height = 50;
+      picture.width = PICTURE.WIDTH;
+      picture.height = PICTURE.HEIGHT;
       picture.src = photo;
       item.appendChild(picture);
       photoList.appendChild(item);

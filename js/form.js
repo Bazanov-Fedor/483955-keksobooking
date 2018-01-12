@@ -29,6 +29,13 @@
     100: ['0']
   };
 
+  // минимальное и максимальное количество знаков в заголовке объявления
+  var MIN_LENGTH_TITLE = 30;
+  var MAX_LENGTH_TITLE = 100;
+  // минимальная и максимальная цена в объявлении
+  var MIN_PRICE = 0;
+  var MAX_PRICE = 1000000;
+
   // Найдём необходимые элементы формы с которыми взаимодействует пользователь
   // Форма подачи объявления и поля для заполнения
   var form = document.querySelector('.notice__form');
@@ -145,9 +152,6 @@
 
   //  -----------  валидация заголовка объявления пользователя  ----------  //
   userTitle.addEventListener('change', function (evt) {
-    // минимальное и максимальное количество знаков в заголовке
-    var MIN_LENGTH_TITLE = 30;
-    var MAX_LENGTH_TITLE = 100;
     var target = evt.target;
     if (target.value.length < MIN_LENGTH_TITLE) {
       target.setAttribute('style', 'border: 2px solid red');
@@ -163,9 +167,6 @@
 
   //  -----------  валидация цены на определённый тип жилья  -----------  //
   userOfferPrice.addEventListener('invalid', function (evt) {
-    // минимальная и максимальная цена
-    var MIN_PRICE = 0;
-    var MAX_PRICE = 1000000;
     var target = evt.target;
     if (target.value < MIN_PRICE) {
       target.setAttribute('style', 'border: 2px solid red');

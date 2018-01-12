@@ -29,5 +29,8 @@
   window.URL = 'https://1510.dump.academy/keksobooking';
   // на карте отображается не более пяти пинов других объявлений
   window.PIN_ORDERS = 5;
+  // форматы загружаемых фотогрфий
   window.FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  // ms
+  window.DEBOUNCE_INTERVAL = 500;
 })();

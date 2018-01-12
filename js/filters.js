@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  // начальная позиция для метода substring
+  var SUBSTRING_BEGIN = 8;
+  // parseInt
+  var MAX_PARSE_INT = 10;
+  //  начальная позиция для метода slice
+  var SLICE_BEGIN = 0;
 
   // Найдём элементы с которыми будем работать над фильтрацией объявлений
   // блок с выбором фильтров
@@ -50,17 +56,17 @@
           break;
         case 'low':
           arr = arr.filter(function (element) {
-            return element.offer.price <= 10000;
+            return element.offer.price <= window.PRICE_HOUSE.LOW;
           });
           break;
         case 'high':
           arr = arr.filter(function (element) {
-            return element.offer.price >= 50000;
+            return element.offer.price >= window.PRICE_HOUSE.MIDDLE;
           });
           break;
         case 'middle':
           arr = arr.filter(function (element) {
-            return (element.offer.price > 10000) && (element.offer.price < 50000);
+            return (element.offer.price > window.PRICE_HOUSE.LOW) && (element.offer.price < window.PRICE_HOUSE.MIDDLE);
           });
       }
       return arr;
@@ -70,7 +76,7 @@
     function (arr) {
       if (FILTER_VALUE.rooms !== 'any') {
         arr = arr.filter(function (element) {
-          return element.offer.rooms === parseInt(FILTER_VALUE.rooms, 10);
+          return element.offer.rooms === parseInt(FILTER_VALUE.rooms, MAX_PARSE_INT);
         });
       }
       return arr;
@@ -80,7 +86,7 @@
     function (arr) {
       if (FILTER_VALUE.guests !== 'any') {
         arr = arr.filter(function (element) {
-          return element.offer.guests === parseInt(FILTER_VALUE.guests, 10);
+          return element.offer.guests === parseInt(FILTER_VALUE.guests, MAX_PARSE_INT);
         });
       }
       return arr;
@@ -99,7 +105,7 @@
   // Функции отвечающие за фильтрацию
   var onFiltersChange = function (evt) {
     // Выставляем значение сработавшего фильтра в объекте текущих значений фильтров
-    var filterName = evt.target.name.substring(8);
+    var filterName = evt.target.name.substring(SUBSTRING_BEGIN);
     FILTER_VALUE[filterName] = evt.target.value;
     // Копируем исходные данные для фильтрования
     window.filters.filteredData = dataInfo.slice();
@@ -117,7 +123,7 @@
 
     // Получаем массив нужной длинны
     if (window.filters.filteredData.length > window.PIN_ORDERS) {
-      window.filters.filteredData = window.filters.filteredData.slice(0, window.PIN_ORDERS);
+      window.filters.filteredData = window.filters.filteredData.slice(SLICE_BEGIN, window.PIN_ORDERS);
     }
 
     // Добавляем пины на страницу через установленный тайм-аут
@@ -135,7 +141,7 @@
     filteredData: [],
     transferData: function (data) {
       dataInfo = data.slice();
-      this.filteredData = data.slice(0, window.PIN_ORDERS);
+      this.filteredData = data.slice(SLICE_BEGIN, window.PIN_ORDERS);
     },
   };
 })();
