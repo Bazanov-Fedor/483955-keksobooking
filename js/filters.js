@@ -1,11 +1,12 @@
 'use strict';
 
 (function () {
-  // начальная позиция для метода substring
-  var SUBSTRING_BEGIN = 8;
+
+  // для метода substring
+  var LENGTH = 8;
   // parseInt
   var MAX_PARSE_INT = 10;
-  //  начальная позиция для метода slice
+  // начальная позиция для метода slice
   var SLICE_BEGIN = 0;
 
   // Найдём элементы с которыми будем работать над фильтрацией объявлений
@@ -105,7 +106,7 @@
   // Функции отвечающие за фильтрацию
   var onFiltersChange = function (evt) {
     // Выставляем значение сработавшего фильтра в объекте текущих значений фильтров
-    var filterName = evt.target.name.substring(SUBSTRING_BEGIN);
+    var filterName = evt.target.name.substring(LENGTH);
     FILTER_VALUE[filterName] = evt.target.value;
     // Копируем исходные данные для фильтрования
     window.filters.filteredData = dataInfo.slice();

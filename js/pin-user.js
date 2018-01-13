@@ -46,22 +46,22 @@
         y: moveEvt.clientY
       };
 
-      var LEFT = pinUser.offsetLeft - shift.x;
-      var TOP = pinUser.offsetTop - shift.y;
+      var moveLeft = pinUser.offsetLeft - shift.x;
+      var moveTop = pinUser.offsetTop - shift.y;
 
       // высота пина с учётом translate и высоты острия пина
       var HEIGHT_PIN = (HEIGHT_MAIN_PIN / POSITION_CORRECT + HEIGHT_MAIN_TAIL);
 
-      pinUser.style.left = LEFT + 'px';
-      if (TOP >= (window.BORDER_Y.MIN - HEIGHT_PIN) && TOP <= (window.BORDER_Y.MAX - HEIGHT_PIN)) {
-        pinUser.style.top = TOP + 'px';
+      pinUser.style.left = moveLeft + 'px';
+      if (moveTop >= (window.BORDER_Y.MIN - HEIGHT_PIN) && moveTop <= (window.BORDER_Y.MAX - HEIGHT_PIN)) {
+        pinUser.style.top = moveTop + 'px';
       }
 
-      if (LEFT < BORDER_X.LEFT_LIMIT) {
+      if (moveLeft < BORDER_X.LEFT_LIMIT) {
         pinUser.style.left = BORDER_X.LEFT_LIMIT + 'px';
       }
 
-      if (LEFT > BORDER_X.RIGHT_LIMIT) {
+      if (moveLeft > BORDER_X.RIGHT_LIMIT) {
         pinUser.style.left = BORDER_X.RIGHT_LIMIT + 'px';
       }
     };
