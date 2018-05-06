@@ -26,7 +26,7 @@
     ERROR_TIME: 'Запрос не успел выполниться за '
   };
   // путь на сервер
-  window.URL = 'https://1510.dump.academy/keksobooking';
+  window.URL = 'https://js.dump.academy/keksobooking';
   // на карте отображается не более пяти пинов других объявлений
   window.PIN_ORDERS = 5;
   // форматы загружаемых фотогрфий
